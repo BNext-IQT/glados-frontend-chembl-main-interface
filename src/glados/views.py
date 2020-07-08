@@ -9,7 +9,6 @@ from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from elasticsearch_dsl import Search
-from glados.api.chembl.url_shortening import url_shortener
 from glados.utils import *
 from twitter import *
 
@@ -18,7 +17,6 @@ from . import heatmap_helper
 from . import og_tags_generator
 from . import schema_tags_generator
 from django.http import Http404
-from django.views.decorators.csrf import csrf_exempt
 from glados.es_connection import DATA_CONNECTION, MONITORING_CONNECTION
 import json
 
@@ -479,13 +477,6 @@ def request_heatmap_helper(request):
 
     return JsonResponse({'data': 'Data'})
 
-
-def extend_url(request, hash):
-    resp_data = {
-        'long_url': url_shortener.get_original_url(hash)
-    }
-
-    return JsonResponse(resp_data)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Tracking
