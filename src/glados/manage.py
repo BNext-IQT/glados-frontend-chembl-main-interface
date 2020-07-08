@@ -16,7 +16,6 @@ def main():
     import glados.apache_config_generator
     import glados.admin_user_generator
     from glados.utils import manage_shortened_urls
-    from glados.utils import daemon_simulator
 
         
     # Compress files before server launch if compression is enabled

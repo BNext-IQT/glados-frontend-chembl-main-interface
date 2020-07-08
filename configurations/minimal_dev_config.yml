@@ -21,5 +21,3 @@ current_release:
   # The basename of the files in the ftp
   downloads_release_name: 'chembl_27'
   elasticsearch_chembl_index_prefix: 'chembl_27_'
-unichemapi: 'le unichem api'
-unichem_similarity_endpoint: 'le similarity endpoint'

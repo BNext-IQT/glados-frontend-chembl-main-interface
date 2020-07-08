@@ -10,5 +10,6 @@ def glados_settings_context_processor(request):
         'beaker_url': settings.BEAKER_URL,
         'chembl_es_index_prefix': settings.CHEMBL_ES_INDEX_PREFIX,
         'es_url': settings.ELASTICSEARCH_EXTERNAL_URL,
+        'es_proxy_base_url': settings.ES_PROXY_API_BASE_URL
     }
     return gsc_vars

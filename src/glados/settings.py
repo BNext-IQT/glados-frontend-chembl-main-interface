@@ -88,12 +88,6 @@ if TARGET_PREDICTION_LOOKUP_FILE is None:
 print('TARGET_PREDICTION_LOOKUP_FILE: ', TARGET_PREDICTION_LOOKUP_FILE)
 
 
-SPAWN_JOBS = run_config.get('spawn_jobs', True)
-if SPAWN_JOBS:
-    print('SPAWN_JOBS is True, this means that I will delay the annotated functions and put them in the worker queue.')
-else:
-    print('SPAWN_JOBS is True, this means that I will run the job functions straight away. Not using any worker.')
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -122,6 +116,15 @@ if DOWNLOADS_RELEASE_NAME is None:
 CHEMBL_ES_INDEX_PREFIX = release_config.get('elasticsearch_chembl_index_prefix')
 if DOWNLOADS_RELEASE_NAME is None:
     raise GladosSettingsError("You must provide the current downloads base name ")
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ES Proxy API Path
+# ----------------------------------------------------------------------------------------------------------------------
+
+ES_PROXY_API_BASE_URL = run_config.get('es_proxy_base_url')
+if ES_PROXY_API_BASE_URL is None:
+    raise GladosSettingsError("You must provide the es proxy base url")
 
 # ----------------------------------------------------------------------------------------------------------------------
 # SERVER BASE PATH
@@ -242,8 +245,7 @@ MIDDLEWARE = [
   'django.middleware.csrf.CsrfViewMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
-  'django.middleware.clickjacking.XFrameOptionsMiddleware',
-  'whitenoise.middleware.WhiteNoiseMiddleware'
+  'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 CORS_URLS_REGEX = r'^.*/glados_api/.*$'

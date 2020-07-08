@@ -1,11 +1,11 @@
-from elasticsearch_dsl import Search
 import json
+import requests
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.conf import settings
 from django.urls import reverse
-from glados.es_connection import DATA_CONNECTION, MONITORING_CONNECTION
 
-# This uses elasticsearch to generate helper objects to generate the schema tags of the pages
+
 # ------------------------------------------------------------------------------------------------------------------
 # Helper functions
 # ------------------------------------------------------------------------------------------------------------------
@@ -146,20 +146,16 @@ def get_main_page_schema(request):
 # ------------------------------------------------------------------------------------------------------------------
 def get_schema_obj_for_compound(chembl_id, request):
 
-    q = {
-        "query_string": {
-            "default_field": "molecule_chembl_id",
-            "query": chembl_id
-        }
-    }
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_molecule/{chembl_id}'
 
-    if response.hits.total.value == 0:
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+    if status_code == 404:
         return get_no_metadata_object()
 
-    item = response.hits[0]
+    response_json = doc_request.json()
+
+    item = response_json['_source']
     molecule_type = item['molecule_type']
     do_not_generate_metadata = molecule_type in ['Unclassified', 'Cell', 'Antibody', 'Enzyme', 'Protein']
     if do_not_generate_metadata:

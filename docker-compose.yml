@@ -1,14 +1,26 @@
-version: "3"
-services:
-  glados:
-    build: .
-    container_name: glados
-    image: chembl/glados
-    ports:
-      - "8000:8000"
-    networks:
-      - "cake"
+version: '3.7'
 
-networks:
-  cake:
-    driver: bridge
+x-build-args: &build_args
+  INSTALL_PYTHON_VERSION: 3.7
+
+services:
+  glados-dev:
+    build:
+      context: .
+      target: development-server
+      args:
+        <<: *build_args
+    image: chembl/gladosi:dev
+    environment:
+      - CONFIG_FILE_PATH=/app/config.yml
+    ports:
+    - "8000:8000"
+  glados-prod:
+    build:
+      context: .
+      target: production-server
+      args:
+        <<: *build_args
+    image: "${SERVER_IMAGE_TAG:-chembl/glados:prod}"
+    ports:
+    - "8000:8000"
