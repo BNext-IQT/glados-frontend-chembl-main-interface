@@ -59,7 +59,7 @@ glados.useNameSpace 'glados.models.Search',
         search_type: @get('search_type')
         raw_search_params: JSON.stringify(@get('query_params'))
 
-      submitPromise = glados.doCSRFPost(glados.Settings.CHEMBL_SUBMIT_SS_SEARCH_ENDPOINT, paramsDict)
+      submitPromise = $.post(glados.Settings.CHEMBL_SUBMIT_SS_SEARCH_ENDPOINT, paramsDict)
       thisModel = @
       submitPromise.then (data) ->
 

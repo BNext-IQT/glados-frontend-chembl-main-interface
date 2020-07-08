@@ -305,7 +305,6 @@ glados.loadSearchResultsURLS = ()->
 
   glados.Settings.GLADOS_API_BASE_URL = "#{glados.Settings.GLADOS_BASE_URL_FULL}glados_api/chembl"
   glados.Settings.GENERATE_SERVER_SIDE_DOWNLOAD_ENDPOINT = 'glados_api/shared/downloads/queue_download/'
-  glados.Settings.SHORTEN_URLS_ENDPOINT = 'glados_api/chembl/url_shortening/shorten_url/'
   glados.Settings.EXTEND_URLS_ENDPOINT = 'glados_api/chembl/url_shortening/extend_url/'
   glados.Settings.REGISTER_USAGE_ENDPOINT = 'register_usage'
   glados.Settings.REGISTER_SEARCH_ENDPOINT = 'register_search'
@@ -352,6 +351,8 @@ glados.loadSearchResultsURLS = ()->
 
   glados.Settings.FACETS_GROUP_CONFIGURATION_URL_GENERATOR = Handlebars.compile(
     "#{glados.Settings.ES_PROXY_API_BASE_URL}/properties_configuration/facets/{{index_name}}/{{group_name}}")
+
+  glados.Settings.SHORTEN_URLS_ENDPOINT = "#{glados.Settings.ES_PROXY_API_BASE_URL}/url_shortening/shorten_url"
 
 # Logs the JavaScript environment details
 glados.logGladosSettings = () ->

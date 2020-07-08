@@ -35,7 +35,7 @@ glados.useNameSpace 'glados.views.Breadcrumb',
       paramsDict =
         long_url: urlToShorten
 
-      shortenURL = glados.doCSRFPost(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
+      shortenURL = $.post(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
 
       thisView = @
       shortenURL.then (data) ->

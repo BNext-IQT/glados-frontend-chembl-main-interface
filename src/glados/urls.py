@@ -188,7 +188,7 @@ common_urls = [
     url(r'^embed/$',
         xframe_options_exempt(DirectTemplateView.as_view(template_name="glados/Embedding/embed_base.html")), ),
 
-    url(r'^embed/tiny/(?P<hash>.*?)$', views.render_params_from_hash_when_embedded, name='embed-tiny'),
+    url(r'^embed/tiny/(?P<url_hash>.*?)$', views.render_params_from_hash_when_embedded, name='embed-tiny'),
     # --------------------------------------------------------------------------------------------------------------------
     # Compounds
     # --------------------------------------------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ common_urls = [
     # --------------------------------------------------------------------------------------------------------------------
     # Tiny urls
     # --------------------------------------------------------------------------------------------------------------------
-    url(r'^g/tiny/(?P<hash>.*?)$', views.render_params_from_hash, name='tiny'),
+    url(r'^g/tiny/(?P<url_hash>.*?)$', views.render_params_from_hash, name='tiny'),
 
     url(r'^robots.txt', lambda x: HttpResponse(
         "User-Agent: *\nDisallow: / \nUser-Agent: Twitterbot\nAllow: {0}img".format(settings.STATIC_URL),

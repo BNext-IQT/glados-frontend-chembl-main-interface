@@ -422,12 +422,18 @@ def main_html_base_no_bar(request):
     return render(request, 'glados/mainGladosNoBar.html', context)
 
 
-def render_params_from_hash(request, hash):
+def render_params_from_hash(request, url_hash):
 
-    long_url, expiration_date_str = url_shortener.get_original_url(hash)
+    expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
 
-    if long_url is None:
+    doc_request = requests.get(expansion_url)
+    status_code = doc_request.status_code
+    if status_code == 404:
         raise Http404("Shortened url does not exist")
+
+    response_json = doc_request.json()
+    long_url = response_json.get('long_url')
+    expiration_date_str = response_json.get('expires')
 
     context = {
         'shortened_params': long_url,
@@ -437,9 +443,18 @@ def render_params_from_hash(request, hash):
     return render(request, 'glados/mainGladosNoBar.html', context)
 
 
-def render_params_from_hash_when_embedded(request, hash):
+def render_params_from_hash_when_embedded(request, url_hash):
 
-    long_url, expiration_date_str = url_shortener.get_original_url(hash)
+    expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
+
+    doc_request = requests.get(expansion_url)
+    status_code = doc_request.status_code
+    if status_code == 404:
+        raise Http404("Shortened url does not exist")
+
+    response_json = doc_request.json()
+    long_url = response_json.get('long_url')
+
     context = {
         'shortened_params': long_url
     }

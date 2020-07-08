@@ -771,7 +771,7 @@ glados.useNameSpace 'glados',
           paramsDict =
             long_url: urlToShorten
 
-          shortenURL = glados.doCSRFPost(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
+          shortenURL = $.post(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
           shortenURL.then (data) ->
 
             hashGot = data.hash
@@ -793,7 +793,7 @@ glados.useNameSpace 'glados',
         paramsDict =
           long_url: urlToShorten
 
-        return glados.doCSRFPost(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
+        return $.post(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
 
       shortenHTMLLinkIfNecessary: ($anchor) ->
         if $anchor.attr('data-shortening-checked') != 'yes'
@@ -809,7 +809,7 @@ glados.useNameSpace 'glados',
             paramsDict =
               long_url: urlToShorten
 
-            shortenURL = glados.doCSRFPost(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
+            shortenURL = $.post(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
             shortenURL.then (data) ->
               newHref = glados.Settings.SHORTENED_URL_GENERATOR
                 hash: data.hash

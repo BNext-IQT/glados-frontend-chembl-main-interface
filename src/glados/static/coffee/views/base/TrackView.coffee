@@ -14,7 +14,7 @@ glados.useNameSpace 'glados.views.base',
           view_type: viewType
           entity_name: entityName
 
-        registerUsage = glados.doCSRFPost(glados.Settings.REGISTER_USAGE_ENDPOINT, paramsDict)
+        registerUsage = $.post(glados.Settings.REGISTER_USAGE_ENDPOINT, paramsDict)
         registerUsage.then (data) -> console.debug "usage for #{viewName} registered"
         registerUsage.fail (data) -> console.debug "usage registration for #{viewName} failed!"
 
@@ -23,7 +23,7 @@ glados.useNameSpace 'glados.views.base',
       paramsDict =
         search_type: searchType
 
-      registerSearch = glados.doCSRFPost(glados.Settings.REGISTER_SEARCH_ENDPOINT, paramsDict)
+      registerSearch = $.post(glados.Settings.REGISTER_SEARCH_ENDPOINT, paramsDict)
       registerSearch.then (data) -> console.debug "#{searchType} search registered"
       registerSearch.fail (data) -> console.debug "#{searchType} search failed!"
 

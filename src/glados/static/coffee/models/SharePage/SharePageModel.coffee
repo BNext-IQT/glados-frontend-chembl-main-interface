@@ -24,7 +24,7 @@ glados.useNameSpace 'glados.models.SharePage',
       urlToShorten = window.location.href.match(glados.Settings.SHORTENING_MATCH_REPEXG)[0]
       paramsDict =
         long_url: urlToShorten
-      shortenURL = glados.doCSRFPost(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
+      shortenURL = $.post(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
 
       thisModel = @
       shortenURL.then (data) ->
