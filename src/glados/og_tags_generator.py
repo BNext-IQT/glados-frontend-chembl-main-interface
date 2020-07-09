@@ -1,6 +1,4 @@
-from elasticsearch_dsl import Search
 from django.conf import settings
-from glados.es_connection import DATA_CONNECTION, MONITORING_CONNECTION
 
 import requests
 
