@@ -493,7 +493,6 @@ def register_usage(request):
             glados_server_statistics.record_view_usage(view_name, view_type, entity_name)
             return JsonResponse({'success': 'registration successful!'})
         except Exception as e:
-            print_server_error(e)
             return HttpResponse('Internal Server Error', status=500)
     else:
         return JsonResponse({'error': 'this is only available via POST! You crazy hacker! :P'})

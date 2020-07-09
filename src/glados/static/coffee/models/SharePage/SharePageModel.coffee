@@ -41,10 +41,8 @@ glados.useNameSpace 'glados.models.SharePage',
 
     expandURL: ->
 
-      console.log 'expand url!'
       @set('state', glados.models.SharePage.SharePageModel.States.EXPANDING_URL)
-      console.log @get('url_hash')
-      getExpandedURL = $.getJSON(glados.Settings.EXTEND_URLS_ENDPOINT_URL + @get('url_hash'))
+      getExpandedURL = $.getJSON(glados.Settings.EXTEND_URLS_ENDPOINT_GENERATOR({'hash': @get('url_hash')}))
 
       thisModel = @
       getExpandedURL.then (data) ->

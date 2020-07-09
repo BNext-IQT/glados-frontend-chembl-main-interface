@@ -304,9 +304,7 @@ glados.loadSearchResultsURLS = ()->
   glados.Settings.ENTITY_NAME_TO_ENTITY[glados.models.Compound.Drug.prototype.browseLinkEntityName] = glados.models.Compound.Drug
 
   glados.Settings.GLADOS_API_BASE_URL = "#{glados.Settings.GLADOS_BASE_URL_FULL}glados_api/chembl"
-  glados.Settings.GENERATE_SERVER_SIDE_DOWNLOAD_ENDPOINT = 'glados_api/shared/downloads/queue_download/'
-  glados.Settings.EXTEND_URLS_ENDPOINT = 'glados_api/chembl/url_shortening/extend_url/'
-  glados.Settings.REGISTER_USAGE_ENDPOINT = 'register_usage'
+  glados.Settings.REGISTER_USAGE_ENDPOINT = "#{glados.Settings.GLADOS_BASE_PATH_REL}register_usage"
   glados.Settings.REGISTER_SEARCH_ENDPOINT = 'register_search'
   glados.Settings.CHEMBL_LIST_HELPER_ENDPOINT = 'glados_api/chembl/es_proxy/get_es_data'
   glados.Settings.CHEMBL_SUBMIT_SS_SEARCH_ENDPOINT = 'glados_api/chembl/sssearch/submit/'
@@ -328,6 +326,10 @@ glados.loadSearchResultsURLS = ()->
 
   glados.Settings.SHORTENED_EMBED_URL_GENERATOR =
   Handlebars.compile("#{glados.Settings.GLADOS_BASE_URL_FULL}embed/tiny/{{{hash}}}")
+
+  glados.Settings.EXTEND_URLS_ENDPOINT_GENERATOR =
+  Handlebars.compile("#{glados.Settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{{{hash}}}")
+
 
   glados.Settings.ENTITY_BROWSERS_URL_TEMPLATE = "{{#if fragment_only}}\#{{else}}#{glados.Settings.GLADOS_MAIN_ROUTER_BASE_URL}{{/if}}" +
     "browse/{{entity}}" +

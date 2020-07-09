@@ -14,7 +14,7 @@ glados.useNameSpace 'glados.views.base',
           view_type: viewType
           entity_name: entityName
 
-        registerUsage = $.post(glados.Settings.REGISTER_USAGE_ENDPOINT, paramsDict)
+        registerUsage = glados.doCSRFPost(glados.Settings.REGISTER_USAGE_ENDPOINT, paramsDict)
         registerUsage.then (data) -> console.debug "usage for #{viewName} registered"
         registerUsage.fail (data) -> console.debug "usage registration for #{viewName} failed!"
 
