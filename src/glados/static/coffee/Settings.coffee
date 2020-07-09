@@ -305,7 +305,6 @@ glados.loadSearchResultsURLS = ()->
 
   glados.Settings.GLADOS_API_BASE_URL = "#{glados.Settings.GLADOS_BASE_URL_FULL}glados_api/chembl"
   glados.Settings.REGISTER_USAGE_ENDPOINT = "register_usage"
-  glados.Settings.REGISTER_SEARCH_ENDPOINT = 'register_search'
   glados.Settings.CHEMBL_LIST_HELPER_ENDPOINT = 'glados_api/chembl/es_proxy/get_es_data'
   glados.Settings.CHEMBL_SUBMIT_SS_SEARCH_ENDPOINT = 'glados_api/chembl/sssearch/submit/'
   glados.Settings.CHEMBL_LIST_HELPER_URL = "#{glados.Settings.GLADOS_BASE_PATH_REL}#{glados.Settings.CHEMBL_LIST_HELPER_ENDPOINT}"
