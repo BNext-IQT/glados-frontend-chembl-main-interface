@@ -486,16 +486,34 @@ def request_heatmap_helper(request):
 def register_usage(request):
 
     if request.method == "POST":
+
+
         try:
-            view_name = request.POST.get('view_name', '')
-            view_type = request.POST.get('view_type', '')
-            entity_name = request.POST.get('entity_name', '')
-            glados_server_statistics.record_view_usage(view_name, view_type, entity_name)
-            return JsonResponse({'success': 'registration successful!'})
+
+            url = f'{settings.ES_PROXY_API_BASE_URL}/frontend_element_usage/register_element_usage'
+
+            payload = {
+                'view_name': request.POST.get('view_name', ''),
+                'view_type': request.POST.get('view_type', ''),
+                'entity_name': request.POST.get('entity_name', '')
+            }
+
+            request = requests.post(url, data=payload)
+
+            status_code = request.status_code
+            if status_code != 200:
+                return HttpResponse('Internal Server Error', status=500)
+
+            response_text = request.text
+
+            return JsonResponse({'success': response_text})
+
         except Exception as e:
             return HttpResponse('Internal Server Error', status=500)
+
+
     else:
-        return JsonResponse({'error': 'this is only available via POST! You crazy hacker! :P'})
+        return JsonResponse({'error': 'this is only available via POST!'})
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Report Cards
