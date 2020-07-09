@@ -9,10 +9,8 @@ from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from elasticsearch_dsl import Search
-from glados.utils import *
 from twitter import *
 
-from . import heatmap_helper
 from . import og_tags_generator
 from . import schema_tags_generator
 from django.http import Http404
@@ -456,25 +454,6 @@ def render_params_from_hash_when_embedded(request, url_hash):
         'shortened_params': long_url
     }
     return render(request, 'glados/Embedding/embed_base.html', context)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Heatmap Helper
-# ----------------------------------------------------------------------------------------------------------------------
-
-
-def request_heatmap_helper(request):
-    if request.method != "POST":
-        return JsonResponse({'error': 'this is only available via POST'})
-
-    index_name = request.POST.get('index_name', '')
-    raw_search_data = request.POST.get('search_data', '')
-    action = request.POST.get('action')
-
-    if action == 'GET_INITIAL_DATA':
-        heatmap_helper.generate_heatmap_initial_data(index_name, raw_search_data)
-
-    return JsonResponse({'data': 'Data'})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
