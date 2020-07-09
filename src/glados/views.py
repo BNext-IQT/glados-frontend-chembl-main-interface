@@ -12,7 +12,6 @@ from elasticsearch_dsl import Search
 from glados.utils import *
 from twitter import *
 
-from glados.usage_statistics import glados_server_statistics
 from . import heatmap_helper
 from . import og_tags_generator
 from . import schema_tags_generator
