@@ -5,10 +5,10 @@ glados.useNameSpace 'glados.models.visualisation',
 
     url: ->
 
-      baseUrl = "#{glados.Settings.GLADOS_API_BASE_URL}/visualisations/target_classifications"
+      baseUrl = "#{glados.Settings.ES_PROXY_API_BASE_URL}/visualisations/target_classifications"
       type = @get('type')
       if type == glados.models.visualisation.TargetClassificationModel.Types.PROTEIN_CLASSIFICATION
-        return "#{baseUrl}/protein_class"
+        return "#{baseUrl}/protein_classification"
       else if type == glados.models.visualisation.TargetClassificationModel.Types.ORGANISM_TAXONOMY
         return "#{baseUrl}/organism_taxonomy"
       else if type == glados.models.visualisation.TargetClassificationModel.Types.GENE_ONTOLOGY

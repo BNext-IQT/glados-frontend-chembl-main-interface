@@ -5,7 +5,7 @@ glados.useNameSpace 'glados.models.visualisation',
 
     url: ->
 
-      baseUrl = "#{glados.Settings.GLADOS_API_BASE_URL}/visualisations/assay_classifications"
+      baseUrl = "#{glados.Settings.ES_PROXY_API_BASE_URL}/visualisations/assay_classifications"
       type = @get('type')
       if type == glados.models.visualisation.AssayClassificationModel.Types.IN_VIVO
         return "#{baseUrl}/in_vivo"
