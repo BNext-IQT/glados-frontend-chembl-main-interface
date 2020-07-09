@@ -2,6 +2,8 @@ from elasticsearch_dsl import Search
 from django.conf import settings
 from glados.es_connection import DATA_CONNECTION, MONITORING_CONNECTION
 
+import requests
+
 # This uses elasticsearch to generate og tags for the main entities in ChEMBL (Compounds, Targets, Assays, Documents,
 # Cell Lines, Tissues) and other pages. These tags are used to generate a preview when you share the page in social
 # media
@@ -24,22 +26,19 @@ def add_attribute_to_description(description_items, item, attr_name, text_attr_n
 
 def get_og_tags_for_compound(chembl_id):
 
-    q = {
-        "query_string": {
-            "default_field": "molecule_chembl_id",
-            "query": chembl_id
-        }
-    }
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_molecule/{chembl_id}'
+
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+
+    response_json = doc_request.json()
 
     title = 'Compound: '+ chembl_id
     description = 'Compound not found'
-    if response.hits.total.value == 1:
+    if status_code == 200:
         description = ''
         description_items = []
-        item = response.hits[0]
+        item = response_json['_source']
         # add the items to the description if they are available
         pref_name = item['pref_name']
         if pref_name is not None:
@@ -84,23 +83,19 @@ def get_og_tags_for_compound(chembl_id):
 
 def get_og_tags_for_target(chembl_id):
 
-    q = {
-        "query_string": {
-            "default_field": "target_chembl_id",
-            "query": chembl_id
-        }
-    }
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_target/{chembl_id}'
 
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"target")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+
+    response_json = doc_request.json()
 
     title = 'Target: ' + chembl_id
     description = 'Target not found'
-    if response.hits.total.value == 1:
+    if status_code == 200:
         description = ''
         description_items = []
-        item = response.hits[0]
+        item = response_json['_source']
         # add the items to the description if they are available
         pref_name = item['pref_name']
         if pref_name is not None:
@@ -121,23 +116,19 @@ def get_og_tags_for_target(chembl_id):
 
 def get_og_tags_for_assay(chembl_id):
 
-    q = {
-        "query_string": {
-            "default_field": "assay_chembl_id",
-            "query": chembl_id
-        }
-    }
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_target/{chembl_id}'
 
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"assay")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+
+    response_json = doc_request.json()
 
     title = 'Assay: ' + chembl_id
     description = 'Assay not found'
-    if response.hits.total.value == 1:
+    if status_code == 200:
         description = ''
         description_items = []
-        item = response.hits[0]
+        item = response_json['_source']
         # add the items to the description if they are available
 
         add_attribute_to_description(description_items, item, 'assay_type_description', 'Type')
@@ -156,23 +147,20 @@ def get_og_tags_for_assay(chembl_id):
 
 def get_og_tags_for_cell_line(chembl_id):
 
-    q = {
-        "query_string": {
-            "default_field": "cell_chembl_id",
-            "query": chembl_id
-        }
-    }
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_cell_line/{chembl_id}'
 
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"cell_line")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+
+    response_json = doc_request.json()
 
     title = 'Cell Line: ' + chembl_id
     description = 'Cell Line not found'
-    if response.hits.total.value == 1:
+
+    if status_code == 200:
         description = ''
         description_items = []
-        item = response.hits[0]
+        item = response_json['_source']
         # add the items to the description if they are available
         cell_name = item['cell_name']
         if cell_name is not None:
@@ -193,23 +181,20 @@ def get_og_tags_for_cell_line(chembl_id):
 
 
 def get_og_tags_for_tissue(chembl_id):
-    q = {
-        "query_string": {
-            "default_field": "tissue_chembl_id",
-            "query": chembl_id
-        }
-    }
 
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"tissue")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_tissue/{chembl_id}'
+
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+
+    response_json = doc_request.json()
 
     title = 'Tissue: ' + chembl_id
     description = 'Tissue not found'
-    if response.hits.total.value == 1:
+    if status_code == 200:
         description = ''
         description_items = []
-        item = response.hits[0]
+        item = response_json['_source']
         # add the items to the description if they are available
         pref_name = item['pref_name']
         if pref_name is not None:
@@ -227,23 +212,19 @@ def get_og_tags_for_tissue(chembl_id):
 
 def get_og_tags_for_document(chembl_id):
 
-    q = {
-        "query_string": {
-            "default_field": "document_chembl_id",
-            "query": chembl_id
-        }
-    }
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_document/{chembl_id}'
 
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document")\
-        .extra(track_total_hits=True).using(DATA_CONNECTION).query(q)
-    response = s.execute()
+    doc_request = requests.get(compound_url)
+    status_code = doc_request.status_code
+
+    response_json = doc_request.json()
 
     title = 'Document: ' + chembl_id
     description = 'Document not found'
-    if response.hits.total.value == 1:
+    if status_code == 200:
         description = ''
         description_items = []
-        item = response.hits[0]
+        item = response_json['_source']
         # add the items to the description if they are available
         doc_title = item['title']
         if doc_title is not None:
