@@ -27,7 +27,6 @@ def visualise(request):
 
 
 def play(request):
-
     context = {
         'hide_breadcrumbs': True
     }
@@ -81,7 +80,6 @@ def get_latest_tweets_json(request):
         page_number = str((int(offset) / int(count)) + 1)
         tweets_content, user_data, total_count = get_latest_tweets(page_number, count)
     except Exception as e:
-        print_server_error(e)
         return JsonResponse({
             'tweets': [],
             'page_meta': {
@@ -108,7 +106,6 @@ def get_latest_tweets_json(request):
 
 
 def get_latest_blog_entries(request, pageToken):
-
     if not settings.BLOGGER_ENABLED:
         default_empty_response = {
             'entries': [],
@@ -183,34 +180,34 @@ def get_latest_blog_entries(request, pageToken):
 
 
 def get_database_summary(request):
-
     cache_key = 'deposited_datasets'
     cache_time = 604800
-    q = {
-
-
-        "bool": {
-            "filter": {
-                "term": {
-                    "doc_type": "DATASET"
-                }
-            },
-            "must": {
-                "range": {
-                    "_metadata.related_activities.count": {
-                        "gt": 0
+    es_query = {
+        "_source": False,
+        "query": {
+            "bool": {
+                "filter": {
+                    "term": {
+                        "doc_type": "DATASET"
+                    }
+                },
+                "must": {
+                    "range": {
+                        "_metadata.related_activities.count": {
+                            "gt": 0
+                        }
+                    }
+                },
+                "must_not": {
+                    "terms": {
+                        "_metadata.source.src_id": [1, 7, 8, 9, 7, 8, 9, 11, 12, 13, 15, 18, 25, 26, 28, 31,
+                                                    35, 37, 38,
+                                                    39, 41, 42]
                     }
                 }
-            },
-            "must_not": {
-                "terms": {
-                    "_metadata.source.src_id": [1, 7, 8, 9, 7, 8, 9, 11, 12, 13, 15, 18, 25, 26, 28, 31,
-                                                35, 37, 38,
-                                                39, 41, 42]
-                }
             }
-        }
-
+        },
+        "track_total_hits": True,
     }
 
     # tries to get number from cache
@@ -222,17 +219,22 @@ def get_database_summary(request):
 
     print('datasets are not in cache')
 
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document").extra(track_total_hits=True).using(DATA_CONNECTION)\
-        .query(q)
-    response = s.execute()
-    response = {'num_datasets': response.hits.total.value}
+    url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_data'
+    payload = {
+        'index_name': 'chembl_document',
+        'es_query': json.dumps(es_query)
+    }
+
+    es_request = requests.post(url, data=payload)
+    response_json = es_request.json()
+
+    response = {'num_datasets': response_json['es_response']['hits']['total']['value']}
     cache.set(cache_key, response, cache_time)
 
     return JsonResponse(response)
 
 
 def get_entities_records(request):
-
     cache_key = 'entities_records_v2'
     cache_time = 604800
     cache_response = cache.get(cache_key)
@@ -247,37 +249,38 @@ def get_entities_records(request):
     drugs_query = {
 
         "term": {
-          "_metadata.drug.is_drug": True
+            "_metadata.drug.is_drug": True
         }
 
     }
 
     response = {
         'Compounds':
-            Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule").extra(track_total_hits=True).using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Drugs': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule").extra(track_total_hits=True)
+            Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "molecule").extra(track_total_hits=True).using(
+                DATA_CONNECTION)
+                .execute().hits.total.value,
+        'Drugs': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "molecule").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .query(drugs_query).execute().hits.total.value,
-        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"assay").extra(track_total_hits=True)
+        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "assay").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .execute().hits.total.value,
-        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document").extra(track_total_hits=True)
+        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "document").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .execute().hits.total.value,
-        'Targets': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"target").extra(track_total_hits=True)
+        'Targets': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "target").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .execute().hits.total.value,
-        'Cells': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"cell_line").extra(track_total_hits=True)
+        'Cells': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "cell_line").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .execute().hits.total.value,
-        'Tissues': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"tissue").extra(track_total_hits=True)
+        'Tissues': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "tissue").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .execute().hits.total.value,
-        'Indications': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"drug_indication_by_parent")
+        'Indications': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "drug_indication_by_parent")
             .extra(track_total_hits=True).using(DATA_CONNECTION)
             .execute().hits.total.value,
-        'Mechanisms': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"mechanism_by_parent_target")
+        'Mechanisms': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "mechanism_by_parent_target")
             .extra(track_total_hits=True).using(DATA_CONNECTION)
             .execute().hits.total.value
     }
@@ -288,7 +291,6 @@ def get_entities_records(request):
 
 
 def get_covid_entities_records(request):
-
     cache_key = 'covid_entities_records'
     cache_time = 604800
     cache_response = cache.get(cache_key)
@@ -301,8 +303,8 @@ def get_covid_entities_records(request):
     print('records are not in cache')
 
     covid_compounds_query = {
-        "query_string" : {
-            "query" : "_metadata.compound_records.src_id:52",
+        "query_string": {
+            "query": "_metadata.compound_records.src_id:52",
         }
     }
 
@@ -326,15 +328,16 @@ def get_covid_entities_records(request):
 
     response = {
         'Compounds':
-            Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule").extra(track_total_hits=True).using(DATA_CONNECTION)
-            .query(covid_compounds_query).execute().hits.total.value,
-        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"assay").extra(track_total_hits=True)
+            Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "molecule").extra(track_total_hits=True).using(
+                DATA_CONNECTION)
+                .query(covid_compounds_query).execute().hits.total.value,
+        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "assay").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .query(covid_assays_query).execute().hits.total.value,
-        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document").extra(track_total_hits=True)
+        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "document").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .query(covid_documents_query).execute().hits.total.value,
-        'Activities': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"activity").extra(track_total_hits=True)
+        'Activities': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "activity").extra(track_total_hits=True)
             .using(DATA_CONNECTION)
             .query(covid_activities_query).execute().hits.total.value,
     }
@@ -345,7 +348,6 @@ def get_covid_entities_records(request):
 
 
 def get_github_details(request):
-
     cache_key = 'github_details'
     cache_time = 1800
     cache_response = cache.get(cache_key)
@@ -394,11 +396,10 @@ def replace_urls_from_entinies(html, urls):
 
 
 def main_page(request):
-
     context = {
         'main_page': True,
         'hide_breadcrumbs': True,
-        'metadata_str':  json.dumps(schema_tags_generator.get_main_page_schema(request), indent=2),
+        'metadata_str': json.dumps(schema_tags_generator.get_main_page_schema(request), indent=2),
     }
     return render(request, 'glados/main_page.html', context)
 
@@ -418,7 +419,6 @@ def main_html_base_no_bar(request):
 
 
 def render_params_from_hash(request, url_hash):
-
     expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
 
     doc_request = requests.get(expansion_url)
@@ -439,7 +439,6 @@ def render_params_from_hash(request, url_hash):
 
 
 def render_params_from_hash_when_embedded(request, url_hash):
-
     expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
 
     doc_request = requests.get(expansion_url)
@@ -462,9 +461,7 @@ def render_params_from_hash_when_embedded(request, url_hash):
 
 
 def register_usage(request):
-
     if request.method == "POST":
-
 
         try:
 
@@ -493,13 +490,13 @@ def register_usage(request):
     else:
         return JsonResponse({'error': 'this is only available via POST!'})
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 # Report Cards
 # ----------------------------------------------------------------------------------------------------------------------
 
 
 def compound_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_compound(chembl_id),
         'schema_helper_obj': schema_tags_generator.get_schema_obj_for_compound(chembl_id, request),
@@ -510,7 +507,6 @@ def compound_report_card(request, chembl_id):
 
 
 def assay_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_assay(chembl_id)
     }
@@ -519,7 +515,6 @@ def assay_report_card(request, chembl_id):
 
 
 def cell_line_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_cell_line(chembl_id)
     }
@@ -528,7 +523,6 @@ def cell_line_report_card(request, chembl_id):
 
 
 def tissue_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_tissue(chembl_id)
     }
@@ -537,7 +531,6 @@ def tissue_report_card(request, chembl_id):
 
 
 def target_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_target(chembl_id)
     }
@@ -546,7 +539,6 @@ def target_report_card(request, chembl_id):
 
 
 def document_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_document(chembl_id)
     }
