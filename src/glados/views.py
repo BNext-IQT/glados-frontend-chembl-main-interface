@@ -254,35 +254,37 @@ def get_entities_records(request):
 
     }
 
+    def get_index_total_count(index_name, query=None):
+
+        es_proxy_api_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_data'
+        total_count_query = {
+            "_source": False,
+            "track_total_hits": True,
+        }
+        if query is not None:
+            total_count_query['query'] = query
+
+        payload = {
+            'index_name': index_name,
+            'es_query': json.dumps(total_count_query)
+        }
+
+        es_request = requests.post(es_proxy_api_url, data=payload)
+        response_json = es_request.json()
+
+        num_items = response_json['es_response']['hits']['total']['value']
+        return num_items
+
     response = {
-        'Compounds':
-            Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "molecule").extra(track_total_hits=True).using(
-                DATA_CONNECTION)
-                .execute().hits.total.value,
-        'Drugs': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "molecule").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(drugs_query).execute().hits.total.value,
-        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "assay").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "document").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Targets': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "target").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Cells': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "cell_line").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Tissues': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "tissue").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Indications': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "drug_indication_by_parent")
-            .extra(track_total_hits=True).using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Mechanisms': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "mechanism_by_parent_target")
-            .extra(track_total_hits=True).using(DATA_CONNECTION)
-            .execute().hits.total.value
+        'Compounds': get_index_total_count('chembl_molecule'),
+        'Drugs': get_index_total_count('chembl_molecule', drugs_query),
+        'Assays': get_index_total_count('chembl_assay'),
+        'Documents': get_index_total_count('chembl_document'),
+        'Targets': get_index_total_count('chembl_target'),
+        'Cells': get_index_total_count('chembl_cell_line'),
+        'Tissues': get_index_total_count('chembl_tissue'),
+        'Indications': get_index_total_count('chembl_drug_indication_by_parent'),
+        'Mechanisms': get_index_total_count('chembl_mechanism_by_parent_target')
     }
 
     cache.set(cache_key, response, cache_time)
