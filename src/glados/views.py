@@ -8,13 +8,11 @@ from django.conf import settings
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from elasticsearch_dsl import Search
 from twitter import *
 
 from . import og_tags_generator
 from . import schema_tags_generator
 from django.http import Http404
-from glados.es_connection import DATA_CONNECTION, MONITORING_CONNECTION
 import json
 
 
@@ -177,168 +175,6 @@ def get_latest_blog_entries(request, pageToken):
     cache.set(cache_key, entries, cache_time)
 
     return JsonResponse(entries)
-
-
-def get_database_summary(request):
-    cache_key = 'deposited_datasets'
-    cache_time = 604800
-    es_query = {
-        "_source": False,
-        "query": {
-            "bool": {
-                "filter": {
-                    "term": {
-                        "doc_type": "DATASET"
-                    }
-                },
-                "must": {
-                    "range": {
-                        "_metadata.related_activities.count": {
-                            "gt": 0
-                        }
-                    }
-                },
-                "must_not": {
-                    "terms": {
-                        "_metadata.source.src_id": [1, 7, 8, 9, 7, 8, 9, 11, 12, 13, 15, 18, 25, 26, 28, 31,
-                                                    35, 37, 38,
-                                                    39, 41, 42]
-                    }
-                }
-            }
-        },
-        "track_total_hits": True,
-    }
-
-    # tries to get number from cache
-    cache_response = cache.get(cache_key)
-
-    if cache_response != None:
-        print('datasets are in cache')
-        return JsonResponse(cache_response)
-
-    print('datasets are not in cache')
-
-    url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_data'
-    payload = {
-        'index_name': 'chembl_document',
-        'es_query': json.dumps(es_query)
-    }
-
-    es_request = requests.post(url, data=payload)
-    response_json = es_request.json()
-
-    response = {'num_datasets': response_json['es_response']['hits']['total']['value']}
-    cache.set(cache_key, response, cache_time)
-
-    return JsonResponse(response)
-
-
-def get_entities_records(request):
-    cache_key = 'entities_records_v2'
-    cache_time = 604800
-    cache_response = cache.get(cache_key)
-    print(cache_key)
-
-    if cache_response is not None:
-        print('records are in cache')
-        return JsonResponse(cache_response)
-
-    print('records are not in cache')
-
-    drugs_query = {
-
-        "term": {
-            "_metadata.drug.is_drug": True
-        }
-
-    }
-
-    response = {
-        'Compounds': get_index_total_count('chembl_molecule'),
-        'Drugs': get_index_total_count('chembl_molecule', drugs_query),
-        'Assays': get_index_total_count('chembl_assay'),
-        'Documents': get_index_total_count('chembl_document'),
-        'Targets': get_index_total_count('chembl_target'),
-        'Cells': get_index_total_count('chembl_cell_line'),
-        'Tissues': get_index_total_count('chembl_tissue'),
-        'Indications': get_index_total_count('chembl_drug_indication_by_parent'),
-        'Mechanisms': get_index_total_count('chembl_mechanism_by_parent_target')
-    }
-
-    cache.set(cache_key, response, cache_time)
-
-    return JsonResponse(response)
-
-def get_index_total_count(index_name, query=None):
-
-    es_proxy_api_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_data'
-    total_count_query = {
-        "_source": False,
-        "track_total_hits": True,
-    }
-    if query is not None:
-        total_count_query['query'] = query
-
-    payload = {
-        'index_name': index_name,
-        'es_query': json.dumps(total_count_query)
-    }
-
-    es_request = requests.post(es_proxy_api_url, data=payload)
-    response_json = es_request.json()
-
-    num_items = response_json['es_response']['hits']['total']['value']
-    return num_items
-
-
-def get_covid_entities_records(request):
-    cache_key = 'covid_entities_records'
-    cache_time = 604800
-    cache_response = cache.get(cache_key)
-    print(cache_key)
-
-    if cache_response is not None:
-        print('records are in cache')
-        return JsonResponse(cache_response)
-
-    print('records are not in cache')
-
-    covid_compounds_query = {
-        "query_string": {
-            "query": "_metadata.compound_records.src_id:52",
-        }
-    }
-
-    covid_assays_query = {
-        "query_string": {
-            "query": "_metadata.source.src_id:52",
-        }
-    }
-
-    covid_documents_query = {
-        "query_string": {
-            "query": "_metadata.source.src_id:52 AND NOT document_chembl_id:CHEMBL4303081",
-        }
-    }
-
-    covid_activities_query = {
-        "query_string": {
-            "query": "_metadata.source.src_id:52",
-        }
-    }
-
-    response = {
-        'Compounds':
-            get_index_total_count('chembl_molecule', query=covid_compounds_query),
-        'Assays': get_index_total_count('chembl_assay', query=covid_assays_query),
-        'Documents': get_index_total_count('chembl_document', query=covid_documents_query),
-        'Activities': get_index_total_count('chembl_activity', query=covid_activities_query),
-    }
-
-    cache.set(cache_key, response, cache_time)
-
-    return JsonResponse(response)
 
 
 def get_github_details(request):
