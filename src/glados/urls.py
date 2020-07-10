@@ -28,12 +28,6 @@ common_urls = [
 
     url(r'^tweets/$', views.get_latest_tweets_json, name='tweets'),
 
-    url(r'^database_summary/$', views.get_database_summary, name='database_summary'),
-
-    url(r'^entities_records/$', views.get_entities_records, name='entities_records'),
-
-    url(r'^covid_entities_records/$', views.get_covid_entities_records, name='covid_entities_records'),
-
     url(r'^github_details/$', views.get_github_details, name='github_details'),
 
     url(r'^blog_entries/(?P<pageToken>.+)?$', views.get_latest_blog_entries, name='blog_entries'),

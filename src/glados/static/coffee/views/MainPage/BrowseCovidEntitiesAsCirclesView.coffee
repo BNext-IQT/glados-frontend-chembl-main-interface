@@ -18,8 +18,7 @@ glados.useNameSpace 'glados.views.MainPage',
     render: () ->
       thisView = @
 
-
-      infoURL = "#{glados.Settings.GLADOS_BASE_PATH_REL}covid_entities_records"
+      infoURL = "#{glados.Settings.ES_PROXY_API_BASE_URL}/visualisations/covid_entities_records"
 
       fetchDatabasePromise = $.getJSON(infoURL)
 

@@ -254,27 +254,6 @@ def get_entities_records(request):
 
     }
 
-    def get_index_total_count(index_name, query=None):
-
-        es_proxy_api_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_data'
-        total_count_query = {
-            "_source": False,
-            "track_total_hits": True,
-        }
-        if query is not None:
-            total_count_query['query'] = query
-
-        payload = {
-            'index_name': index_name,
-            'es_query': json.dumps(total_count_query)
-        }
-
-        es_request = requests.post(es_proxy_api_url, data=payload)
-        response_json = es_request.json()
-
-        num_items = response_json['es_response']['hits']['total']['value']
-        return num_items
-
     response = {
         'Compounds': get_index_total_count('chembl_molecule'),
         'Drugs': get_index_total_count('chembl_molecule', drugs_query),
@@ -290,6 +269,27 @@ def get_entities_records(request):
     cache.set(cache_key, response, cache_time)
 
     return JsonResponse(response)
+
+def get_index_total_count(index_name, query=None):
+
+    es_proxy_api_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_data'
+    total_count_query = {
+        "_source": False,
+        "track_total_hits": True,
+    }
+    if query is not None:
+        total_count_query['query'] = query
+
+    payload = {
+        'index_name': index_name,
+        'es_query': json.dumps(total_count_query)
+    }
+
+    es_request = requests.post(es_proxy_api_url, data=payload)
+    response_json = es_request.json()
+
+    num_items = response_json['es_response']['hits']['total']['value']
+    return num_items
 
 
 def get_covid_entities_records(request):
@@ -330,18 +330,10 @@ def get_covid_entities_records(request):
 
     response = {
         'Compounds':
-            Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "molecule").extra(track_total_hits=True).using(
-                DATA_CONNECTION)
-                .query(covid_compounds_query).execute().hits.total.value,
-        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "assay").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(covid_assays_query).execute().hits.total.value,
-        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "document").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(covid_documents_query).execute().hits.total.value,
-        'Activities': Search(index=settings.CHEMBL_ES_INDEX_PREFIX + "activity").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(covid_activities_query).execute().hits.total.value,
+            get_index_total_count('chembl_molecule', query=covid_compounds_query),
+        'Assays': get_index_total_count('chembl_assay', query=covid_assays_query),
+        'Documents': get_index_total_count('chembl_document', query=covid_documents_query),
+        'Activities': get_index_total_count('chembl_activity', query=covid_activities_query),
     }
 
     cache.set(cache_key, response, cache_time)
