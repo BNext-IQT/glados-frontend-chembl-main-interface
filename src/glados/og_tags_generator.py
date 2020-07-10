@@ -114,7 +114,7 @@ def get_og_tags_for_target(chembl_id):
 
 def get_og_tags_for_assay(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_target/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_assay/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
