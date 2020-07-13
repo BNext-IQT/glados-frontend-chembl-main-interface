@@ -7,14 +7,14 @@ spec:
   replicas: <NUM_REPLICAS>
   selector:
     matchLabels:
-      app: elasticsearch-proxy-api
+      app: glados-frontend-chembl-main-interface
   template:
     metadata:
       labels:
-        app: elasticsearch-proxy-api
+        app: glados-frontend-chembl-main-interface
     spec:
       containers:
-      - name: elasticsearch-proxy-api
+      - name: glados-frontend-chembl-main-interface
         image: <SERVER_IMAGE_TAG>
         imagePullPolicy: Always
         resources:

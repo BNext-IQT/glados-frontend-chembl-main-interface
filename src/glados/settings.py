@@ -377,9 +377,6 @@ LOGGING = {
             'handlers': ['console'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         },
-        'elasticsearch': {
-            'level': logging.CRITICAL
-        },
         'glados.static_files_compiler': {
             'handlers': ['console'],
             'level': logging.DEBUG if WATCH_AND_UPDATE_STATIC_COMPILED_FILES else logging.INFO,

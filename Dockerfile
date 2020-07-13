@@ -29,4 +29,4 @@ FROM base AS development-server
 ENTRYPOINT python manage.py runserver 8000
 
 FROM base AS production-server
-ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000
+ENTRYPOINT ls
