@@ -34,8 +34,6 @@ class RunEnvs(object):
 # ----------------------------------------------------------------------------------------------------------------------
 WS_URL = 'https://www.ebi.ac.uk/chembl/api/data'
 BEAKER_URL = 'https://www.ebi.ac.uk/chembl/api/utils'
-ELASTICSEARCH_MONITORING_HOST = '<INTERNAL_URL_CAN NOT BE PUBLISHED>'
-ELASTICSEARCH_DATA_HOST = '<INTERNAL_URL_CAN NOT BE PUBLISHED>'
 ELASTICSEARCH_EXTERNAL_URL = 'https://www.ebi.ac.uk/chembl/glados-es'
 CHEMBL_ES_INDEX_PREFIX = 'chembl_'
 
@@ -66,27 +64,6 @@ print('DEBUG: ', DEBUG)
 # Build paths inside the project like this: os.path.join(GLADOS_ROOT, ...)
 GLADOS_ROOT = os.path.dirname(os.path.abspath(glados.__file__))
 VUE_ROOT = os.path.join(GLADOS_ROOT, 'v')
-
-PROPERTIES_CONFIG_OVERRIDE_FILE = run_config.get('properties_config_override_file')
-if PROPERTIES_CONFIG_OVERRIDE_FILE is None:
-    PROPERTIES_CONFIG_OVERRIDE_FILE = os.path.join(GLADOS_ROOT, 'es/es_properties_configuration/config/override.yml')
-print('PROPERTIES_CONFIG_OVERRIDE_FILE: ', PROPERTIES_CONFIG_OVERRIDE_FILE)
-
-PROPERTIES_GROUPS_FILE = run_config.get('properties_groups_file')
-if PROPERTIES_GROUPS_FILE is None:
-    PROPERTIES_GROUPS_FILE = os.path.join(GLADOS_ROOT, 'es/es_properties_configuration/config/groups.yml')
-print('PROPERTIES_GROUPS_FILE: ', PROPERTIES_GROUPS_FILE)
-
-GROUPS_DEFAULT_SORTING_FILE = run_config.get('groups_default_sorting_file')
-if GROUPS_DEFAULT_SORTING_FILE is None:
-    GROUPS_DEFAULT_SORTING_FILE = os.path.join(GLADOS_ROOT, 'es/es_properties_configuration/config/default_sorting.yml')
-print('GROUPS_DEFAULT_SORTING_FILE: ', GROUPS_DEFAULT_SORTING_FILE)
-
-TARGET_PREDICTION_LOOKUP_FILE = run_config.get('target_prediction_lookup_file')
-if TARGET_PREDICTION_LOOKUP_FILE is None:
-    TARGET_PREDICTION_LOOKUP_FILE = os.path.join(GLADOS_ROOT, 'api/chembl/target_prediction/prediction_lookup.json')
-print('TARGET_PREDICTION_LOOKUP_FILE: ', TARGET_PREDICTION_LOOKUP_FILE)
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -147,11 +124,6 @@ else:
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Admin user
-# ----------------------------------------------------------------------------------------------------------------------
-ADMIN_USER_CONFIG = run_config.get('admin_user')
-
-# ----------------------------------------------------------------------------------------------------------------------
 # SECURITY WARNING: keep the secret key used in production secret!
 # ----------------------------------------------------------------------------------------------------------------------
 SECRET_KEY = run_config.get('server_secret_key',
@@ -192,28 +164,6 @@ elasticsearch_config = run_config.get('elasticsearch')
 if elasticsearch_config is None:
     raise GladosSettingsError("You must provide the elasticsearch configuration")
 else:
-    # data connection
-    data_host_config = elasticsearch_config.get('data')
-    ELASTICSEARCH_DATA_HOST = data_host_config.get('host')
-    ELASTICSEARCH_DATA_USERNAME = data_host_config.get('username')
-    ELASTICSEARCH_DATA_PASSWORD = data_host_config.get('password')
-
-    # monitoring connection
-    monitoring_host_config = elasticsearch_config.get('monitoring')
-    ELASTICSEARCH_MONITORING_HOST = monitoring_host_config.get('host')
-    ELASTICSEARCH_MONITORING_USERNAME = monitoring_host_config.get('username')
-    ELASTICSEARCH_MONITORING_PASSWORD = monitoring_host_config.get('password')
-
-    # TODO: HANDLE TRAVIS PWD
-    if RUN_ENV == RunEnvs.TRAVIS:
-        ELASTICSEARCH_USERNAME = 'glados'
-        ELASTICSEARCH_PASSWORD = os.getenv('ELASTICSEARCH_PASSWORD')
-    else:
-        ELASTICSEARCH_USERNAME = elasticsearch_config.get('username')
-        ELASTICSEARCH_PASSWORD = elasticsearch_config.get('password')
-
-    # Public URL
-
     ELASTICSEARCH_EXTERNAL_URL = elasticsearch_config.get('public_host')
     if ELASTICSEARCH_EXTERNAL_URL is None:
         raise GladosSettingsError("You must provide the elasticsearch public URL that will be accessible from the js "

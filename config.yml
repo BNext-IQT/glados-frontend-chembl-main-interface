@@ -1,13 +1,5 @@
 run_env: DEV #DEV, TRAVIS, TEST or PROD
 elasticsearch:
-  monitoring:
-    host: 'https://wwwdev.ebi.ac.uk/chembl/elk/monitoring'
-    username: chembl-mon
-    password: <MONITORING_PASSWORD>
-  data:
-    host: 'https://wwwdev.ebi.ac.uk/chembl/elk/es'
-    username: chembl-indexer
-    password: <MONITORING_PASSWORD>
   public_host: 'https://wwwdev.ebi.ac.uk/chembl/elk/es'
 chembl_api:
   ws_url: 'https://www.ebi.ac.uk/chembl/api/data'
