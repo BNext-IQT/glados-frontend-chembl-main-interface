@@ -22,4 +22,3 @@ enable_blogger: True
 blogger_secrets:
   blogger_key: 'blogger_key'
 es_proxy_base_url: 'https://www.ebi.ac.uk/chembl/interface_api/es_proxy'
-
