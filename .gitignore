@@ -129,3 +129,4 @@ src/glados/v/*
 
 # Dev configurations, used on Dockerfile
 /configurations/config.yml
+config.yml

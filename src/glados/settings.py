@@ -106,8 +106,8 @@ if ES_PROXY_API_BASE_URL is None:
 # ----------------------------------------------------------------------------------------------------------------------
 # SERVER BASE PATH
 # ----------------------------------------------------------------------------------------------------------------------
-# For usage behind proxies eg: 'chembl/beta/', you don't need to care about this in DEV mode
-SERVER_BASE_PATH = '' if os.getenv('SERVER_BASE_PATH') is None else os.getenv('SERVER_BASE_PATH') + '/'
+
+SERVER_BASE_PATH = run_config.get('server_base_path', '')
 print('SERVER_BASE_PATH: ', SERVER_BASE_PATH)
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ LANGUAGES = [
 
 USE_X_FORWARDED_HOST = True
 
-STATIC_URL = '/{0}static/'.format(SERVER_BASE_PATH)
+STATIC_URL = f'{SERVER_BASE_PATH}/static/'
 
 
 STATICFILES_DIRS = (
