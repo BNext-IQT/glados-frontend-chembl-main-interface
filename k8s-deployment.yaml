@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glados-frontend-chembl-main-interface
+  namespace: <NAMESPACE>
+spec:
+  replicas: <NUM_REPLICAS>
+  selector:
+    matchLabels:
+      app: elasticsearch-proxy-api
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-proxy-api
+    spec:
+      containers:
+      - name: elasticsearch-proxy-api
+        image: <SERVER_IMAGE_TAG>
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: <CPU_LIMIT>
+          requests:
+            cpu: <CPU_REQUESTED>
+        volumeMounts:
+        - name: run-config
+          mountPath: '/etc/run_config/'
+          readOnly: true
+        - name: gunicorn-config
+          mountPath: '/etc/gunicorn_config/'
+          readOnly: true
+      volumes:
+        - name: run-config
+          secret:
+            secretName: <RUN_CONFIG_SECRET_NAME>
+        - name: gunicorn-config
+          secret:
+            secretName: <GUNICORN_CONFIG_SECRET_NAME>
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glados-frontend-chembl-main-interface
+  namespace: <NAMESPACE>
+spec:
+  type: NodePort
+  selector:
+    app: glados-frontend-chembl-main-interface
+  ports:
+  - port: 8000
+    targetPort: 8000
