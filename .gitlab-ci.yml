@@ -35,7 +35,7 @@ stages:
   - test_and_qa
   - prepare_config_staging
   - deploy_to_staging
-#  - test_staging
+  - test_staging
 #  - prepare_config_hx
 #  - deploy_to_prod_hx
 #  - test_prod_hx
@@ -177,24 +177,25 @@ deploy_to_staging:
   - cat ${AUTOSCALER_STAGING_FILE_PATH}
   - kubectl apply -n ${CHEMBL_NS_STAGING} -f ${AUTOSCALER_STAGING_FILE_PATH}
 
-#
-### ----------------------------------------------------------------------------------------------------------------------
-### Test staging
-### ----------------------------------------------------------------------------------------------------------------------
-#functional_tests:
-#  stage: test_staging
-#  image:
-#    name: $SERVER_IMAGE_TAG
-#    entrypoint: [""]
-#  only:
-#    - staging
-#  environment:
-#    name: staging
-#    url: ${SERVER_URL_STAGING}
-#  script:
-#  - set -x
-#  - functional_tests/run_functional_tests.py ${SERVER_URL_STAGING} https://wwwdev.ebi.ac.uk/chembl/interface_api/delayed_jobs
-#
+
+## ----------------------------------------------------------------------------------------------------------------------
+## Test staging
+## ----------------------------------------------------------------------------------------------------------------------
+functional_tests:
+  stage: test_staging
+  image:
+    name: $SERVER_IMAGE_TAG
+    entrypoint: [""]
+  only:
+    - staging
+  environment:
+    name: staging
+    url: ${SERVER_URL_STAGING}
+  script:
+  - set -x
+  - echo 'Implement this soon!'
+  - exit 0
+
 ### ----------------------------------------------------------------------------------------------------------------------
 ### Deployment to prod hx
 ### ----------------------------------------------------------------------------------------------------------------------
