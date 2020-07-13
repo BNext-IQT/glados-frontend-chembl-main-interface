@@ -103,7 +103,7 @@ unit_tests:
     entrypoint: [""]
   script:
     - set -x
-    - python manage.py test
+    - CONFIG_FILE_PATH=${CONFIG_UNIT_TESTS_FILE_PATH} python manage.py test
 
 javascript_tests:
   stage: test_and_qa
