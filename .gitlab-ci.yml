@@ -96,7 +96,6 @@ pylint:
 ## Tests
 ## ---------------------------------------------------------------------------------------------------------------------
 
-
 unit_tests:
   stage: test_and_qa
   image:
@@ -105,6 +104,17 @@ unit_tests:
   script:
     - set -x
     - python manage.py test
+
+javascript_tests:
+  stage: test_and_qa
+  image:
+    name: $SERVER_IMAGE_TAG
+    entrypoint: [""]
+  script:
+    - set -x
+    - echo 'activate these tests some day'
+    - exit 0
+
 #
 ### ----------------------------------------------------------------------------------------------------------------------
 ### Deployment to staging
