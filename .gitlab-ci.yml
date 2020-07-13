@@ -104,7 +104,7 @@ unit_tests:
     entrypoint: [""]
   script:
     - set -x
-    - CONFIG_FILE_PATH=${CONFIG_UNIT_TESTS_FILE_PATH} python -m unittest
+    - python manage.py test
 #
 ### ----------------------------------------------------------------------------------------------------------------------
 ### Deployment to staging
