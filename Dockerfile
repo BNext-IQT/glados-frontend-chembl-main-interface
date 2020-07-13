@@ -10,7 +10,8 @@ RUN apt-get install -y \
     netcat \
     iputils-ping \
     build-essential \
-    ssh
+    ssh \
+    nodejs
 
 WORKDIR /app
 COPY requirements.txt .
