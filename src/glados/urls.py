@@ -10,12 +10,6 @@ from django.http import HttpResponse
 
 from django.views.generic.base import RedirectView
 
-from glados.es_connection import setup_glados_es_connection, DATA_CONNECTION, MONITORING_CONNECTION
-
-# Setup Elastic Search Connection here only once
-setup_glados_es_connection(DATA_CONNECTION)
-setup_glados_es_connection(MONITORING_CONNECTION)
-
 common_urls = [
 
     # --------------------------------------------------------------------------------------------------------------------
@@ -27,12 +21,6 @@ common_urls = [
         views.main_page, name='main'),
 
     url(r'^tweets/$', views.get_latest_tweets_json, name='tweets'),
-
-    url(r'^database_summary/$', views.get_database_summary, name='database_summary'),
-
-    url(r'^entities_records/$', views.get_entities_records, name='entities_records'),
-
-    url(r'^covid_entities_records/$', views.get_covid_entities_records, name='covid_entities_records'),
 
     url(r'^github_details/$', views.get_github_details, name='github_details'),
 
@@ -188,7 +176,7 @@ common_urls = [
     url(r'^embed/$',
         xframe_options_exempt(DirectTemplateView.as_view(template_name="glados/Embedding/embed_base.html")), ),
 
-    url(r'^embed/tiny/(?P<hash>.*?)$', views.render_params_from_hash_when_embedded, name='embed-tiny'),
+    url(r'^embed/tiny/(?P<url_hash>.*?)$', views.render_params_from_hash_when_embedded, name='embed-tiny'),
     # --------------------------------------------------------------------------------------------------------------------
     # Compounds
     # --------------------------------------------------------------------------------------------------------------------
@@ -248,7 +236,7 @@ common_urls = [
     # --------------------------------------------------------------------------------------------------------------------
     # Tiny urls
     # --------------------------------------------------------------------------------------------------------------------
-    url(r'^g/tiny/(?P<hash>.*?)$', views.render_params_from_hash, name='tiny'),
+    url(r'^g/tiny/(?P<url_hash>.*?)$', views.render_params_from_hash, name='tiny'),
 
     url(r'^robots.txt', lambda x: HttpResponse(
         "User-Agent: *\nDisallow: / \nUser-Agent: Twitterbot\nAllow: {0}img".format(settings.STATIC_URL),

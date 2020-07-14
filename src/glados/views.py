@@ -8,18 +8,11 @@ from django.conf import settings
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from elasticsearch_dsl import Search
-from glados.api.chembl.url_shortening import url_shortener
-from glados.utils import *
 from twitter import *
 
-from glados.usage_statistics import glados_server_statistics
-from . import heatmap_helper
 from . import og_tags_generator
 from . import schema_tags_generator
 from django.http import Http404
-from django.views.decorators.csrf import csrf_exempt
-from glados.es_connection import DATA_CONNECTION, MONITORING_CONNECTION
 import json
 
 
@@ -32,7 +25,6 @@ def visualise(request):
 
 
 def play(request):
-
     context = {
         'hide_breadcrumbs': True
     }
@@ -86,7 +78,6 @@ def get_latest_tweets_json(request):
         page_number = str((int(offset) / int(count)) + 1)
         tweets_content, user_data, total_count = get_latest_tweets(page_number, count)
     except Exception as e:
-        print_server_error(e)
         return JsonResponse({
             'tweets': [],
             'page_meta': {
@@ -113,7 +104,6 @@ def get_latest_tweets_json(request):
 
 
 def get_latest_blog_entries(request, pageToken):
-
     if not settings.BLOGGER_ENABLED:
         default_empty_response = {
             'entries': [],
@@ -187,170 +177,7 @@ def get_latest_blog_entries(request, pageToken):
     return JsonResponse(entries)
 
 
-def get_database_summary(request):
-
-    cache_key = 'deposited_datasets'
-    cache_time = 604800
-    q = {
-
-
-        "bool": {
-            "filter": {
-                "term": {
-                    "doc_type": "DATASET"
-                }
-            },
-            "must": {
-                "range": {
-                    "_metadata.related_activities.count": {
-                        "gt": 0
-                    }
-                }
-            },
-            "must_not": {
-                "terms": {
-                    "_metadata.source.src_id": [1, 7, 8, 9, 7, 8, 9, 11, 12, 13, 15, 18, 25, 26, 28, 31,
-                                                35, 37, 38,
-                                                39, 41, 42]
-                }
-            }
-        }
-
-    }
-
-    # tries to get number from cache
-    cache_response = cache.get(cache_key)
-
-    if cache_response != None:
-        print('datasets are in cache')
-        return JsonResponse(cache_response)
-
-    print('datasets are not in cache')
-
-    s = Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document").extra(track_total_hits=True).using(DATA_CONNECTION)\
-        .query(q)
-    response = s.execute()
-    response = {'num_datasets': response.hits.total.value}
-    cache.set(cache_key, response, cache_time)
-
-    return JsonResponse(response)
-
-
-def get_entities_records(request):
-
-    cache_key = 'entities_records_v2'
-    cache_time = 604800
-    cache_response = cache.get(cache_key)
-    print(cache_key)
-
-    if cache_response is not None:
-        print('records are in cache')
-        return JsonResponse(cache_response)
-
-    print('records are not in cache')
-
-    drugs_query = {
-
-        "term": {
-          "_metadata.drug.is_drug": True
-        }
-
-    }
-
-    response = {
-        'Compounds':
-            Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule").extra(track_total_hits=True).using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Drugs': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(drugs_query).execute().hits.total.value,
-        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"assay").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Targets': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"target").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Cells': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"cell_line").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Tissues': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"tissue").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Indications': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"drug_indication_by_parent")
-            .extra(track_total_hits=True).using(DATA_CONNECTION)
-            .execute().hits.total.value,
-        'Mechanisms': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"mechanism_by_parent_target")
-            .extra(track_total_hits=True).using(DATA_CONNECTION)
-            .execute().hits.total.value
-    }
-
-    cache.set(cache_key, response, cache_time)
-
-    return JsonResponse(response)
-
-
-def get_covid_entities_records(request):
-
-    cache_key = 'covid_entities_records'
-    cache_time = 604800
-    cache_response = cache.get(cache_key)
-    print(cache_key)
-
-    if cache_response is not None:
-        print('records are in cache')
-        return JsonResponse(cache_response)
-
-    print('records are not in cache')
-
-    covid_compounds_query = {
-        "query_string" : {
-            "query" : "_metadata.compound_records.src_id:52",
-        }
-    }
-
-    covid_assays_query = {
-        "query_string": {
-            "query": "_metadata.source.src_id:52",
-        }
-    }
-
-    covid_documents_query = {
-        "query_string": {
-            "query": "_metadata.source.src_id:52 AND NOT document_chembl_id:CHEMBL4303081",
-        }
-    }
-
-    covid_activities_query = {
-        "query_string": {
-            "query": "_metadata.source.src_id:52",
-        }
-    }
-
-    response = {
-        'Compounds':
-            Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"molecule").extra(track_total_hits=True).using(DATA_CONNECTION)
-            .query(covid_compounds_query).execute().hits.total.value,
-        'Assays': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"assay").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(covid_assays_query).execute().hits.total.value,
-        'Documents': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"document").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(covid_documents_query).execute().hits.total.value,
-        'Activities': Search(index=settings.CHEMBL_ES_INDEX_PREFIX+"activity").extra(track_total_hits=True)
-            .using(DATA_CONNECTION)
-            .query(covid_activities_query).execute().hits.total.value,
-    }
-
-    cache.set(cache_key, response, cache_time)
-
-    return JsonResponse(response)
-
-
 def get_github_details(request):
-
     cache_key = 'github_details'
     cache_time = 1800
     cache_response = cache.get(cache_key)
@@ -399,11 +226,10 @@ def replace_urls_from_entinies(html, urls):
 
 
 def main_page(request):
-
     context = {
         'main_page': True,
         'hide_breadcrumbs': True,
-        'metadata_str':  json.dumps(schema_tags_generator.get_main_page_schema(request), indent=2),
+        'metadata_str': json.dumps(schema_tags_generator.get_main_page_schema(request), indent=2),
     }
     return render(request, 'glados/main_page.html', context)
 
@@ -422,12 +248,17 @@ def main_html_base_no_bar(request):
     return render(request, 'glados/mainGladosNoBar.html', context)
 
 
-def render_params_from_hash(request, hash):
+def render_params_from_hash(request, url_hash):
+    expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
 
-    long_url, expiration_date_str = url_shortener.get_original_url(hash)
-
-    if long_url is None:
+    doc_request = requests.get(expansion_url)
+    status_code = doc_request.status_code
+    if status_code == 404:
         raise Http404("Shortened url does not exist")
+
+    response_json = doc_request.json()
+    long_url = response_json.get('long_url')
+    expiration_date_str = response_json.get('expires')
 
     context = {
         'shortened_params': long_url,
@@ -437,9 +268,17 @@ def render_params_from_hash(request, hash):
     return render(request, 'glados/mainGladosNoBar.html', context)
 
 
-def render_params_from_hash_when_embedded(request, hash):
+def render_params_from_hash_when_embedded(request, url_hash):
+    expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
 
-    long_url, expiration_date_str = url_shortener.get_original_url(hash)
+    doc_request = requests.get(expansion_url)
+    status_code = doc_request.status_code
+    if status_code == 404:
+        raise Http404("Shortened url does not exist")
+
+    response_json = doc_request.json()
+    long_url = response_json.get('long_url')
+
     context = {
         'shortened_params': long_url
     }
@@ -447,50 +286,40 @@ def render_params_from_hash_when_embedded(request, hash):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Heatmap Helper
-# ----------------------------------------------------------------------------------------------------------------------
-
-
-def request_heatmap_helper(request):
-    if request.method != "POST":
-        return JsonResponse({'error': 'this is only available via POST'})
-
-    index_name = request.POST.get('index_name', '')
-    raw_search_data = request.POST.get('search_data', '')
-    action = request.POST.get('action')
-
-    if action == 'GET_INITIAL_DATA':
-        heatmap_helper.generate_heatmap_initial_data(index_name, raw_search_data)
-
-    return JsonResponse({'data': 'Data'})
-
-
-def extend_url(request, hash):
-    resp_data = {
-        'long_url': url_shortener.get_original_url(hash)
-    }
-
-    return JsonResponse(resp_data)
-
-# ----------------------------------------------------------------------------------------------------------------------
 # Tracking
 # ----------------------------------------------------------------------------------------------------------------------
 
 
 def register_usage(request):
-
     if request.method == "POST":
+
         try:
-            view_name = request.POST.get('view_name', '')
-            view_type = request.POST.get('view_type', '')
-            entity_name = request.POST.get('entity_name', '')
-            glados_server_statistics.record_view_usage(view_name, view_type, entity_name)
-            return JsonResponse({'success': 'registration successful!'})
+
+            url = f'{settings.ES_PROXY_API_BASE_URL}/frontend_element_usage/register_element_usage'
+
+            payload = {
+                'view_name': request.POST.get('view_name', ''),
+                'view_type': request.POST.get('view_type', ''),
+                'entity_name': request.POST.get('entity_name', '')
+            }
+
+            request = requests.post(url, data=payload)
+
+            status_code = request.status_code
+            if status_code != 200:
+                return HttpResponse('Internal Server Error', status=500)
+
+            response_text = request.text
+
+            return JsonResponse({'success': response_text})
+
         except Exception as e:
-            print_server_error(e)
             return HttpResponse('Internal Server Error', status=500)
+
+
     else:
-        return JsonResponse({'error': 'this is only available via POST! You crazy hacker! :P'})
+        return JsonResponse({'error': 'this is only available via POST!'})
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Report Cards
@@ -498,7 +327,6 @@ def register_usage(request):
 
 
 def compound_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_compound(chembl_id),
         'schema_helper_obj': schema_tags_generator.get_schema_obj_for_compound(chembl_id, request),
@@ -509,7 +337,6 @@ def compound_report_card(request, chembl_id):
 
 
 def assay_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_assay(chembl_id)
     }
@@ -518,7 +345,6 @@ def assay_report_card(request, chembl_id):
 
 
 def cell_line_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_cell_line(chembl_id)
     }
@@ -527,7 +353,6 @@ def cell_line_report_card(request, chembl_id):
 
 
 def tissue_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_tissue(chembl_id)
     }
@@ -536,7 +361,6 @@ def tissue_report_card(request, chembl_id):
 
 
 def target_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_target(chembl_id)
     }
@@ -545,7 +369,6 @@ def target_report_card(request, chembl_id):
 
 
 def document_report_card(request, chembl_id):
-
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_document(chembl_id)
     }

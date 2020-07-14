@@ -10,7 +10,8 @@ RUN apt-get install -y \
     netcat \
     iputils-ping \
     build-essential \
-    ssh
+    ssh \
+    nodejs
 
 WORKDIR /app
 COPY requirements.txt .
@@ -25,7 +26,7 @@ RUN pip install --user -r requirements.txt
 COPY . .
 
 FROM base AS development-server
-ENTRYPOINT ./manage_glados_no_install.sh runserver 8000
+ENTRYPOINT python manage.py runserver 8000
 
 FROM base AS production-server
-ENTRYPOINT ls
+ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000 -c ${GUNICORN_CONFIG_FILE_PATH}

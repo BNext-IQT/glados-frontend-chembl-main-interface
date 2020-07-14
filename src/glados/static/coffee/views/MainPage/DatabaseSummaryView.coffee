@@ -45,7 +45,7 @@ glados.useNameSpace 'glados.views.MainPage',
       @showContent()
 
     fetchDatasets: ->
-      databaseInfoEsURL = "#{glados.Settings.GLADOS_BASE_PATH_REL}database_summary"
+      databaseInfoEsURL = "#{glados.Settings.ES_PROXY_API_BASE_URL}/visualisations/database_summary"
       fetchDatabasePromise = $.getJSON(databaseInfoEsURL)
 
       thisView = @

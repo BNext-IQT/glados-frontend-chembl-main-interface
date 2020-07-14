@@ -15,8 +15,6 @@ def main():
     import glados.static_files_compiler
     import glados.apache_config_generator
     import glados.admin_user_generator
-    from glados.utils import manage_shortened_urls
-
         
     # Compress files before server launch if compression is enabled
     if os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'runserver' and settings.DEBUG:
@@ -41,15 +39,6 @@ def main():
     elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'createdefaultadminuser':
 
         glados.admin_user_generator.generate_admin_user()
-
-    elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'simulatedaemon':
-
-        daemon_simulator.work()
-
-    elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'deleteexpiredurls':
-
-        manage_shortened_urls.delete_expired_urls()
-
 
 
     # all our custom commands are listed here so they are not sent to the original manage.py
