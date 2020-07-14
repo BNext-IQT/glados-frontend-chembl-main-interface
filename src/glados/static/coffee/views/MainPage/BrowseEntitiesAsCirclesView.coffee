@@ -24,7 +24,7 @@ glados.useNameSpace 'glados.views.MainPage',
       thisView = @
 
 
-      infoURL = "#{glados.Settings.GLADOS_BASE_PATH_REL}entities_records"
+      infoURL = "#{glados.Settings.ES_PROXY_API_BASE_URL}/visualisations/entities_records"
 
       fetchDatabasePromise = $.getJSON(infoURL)
 

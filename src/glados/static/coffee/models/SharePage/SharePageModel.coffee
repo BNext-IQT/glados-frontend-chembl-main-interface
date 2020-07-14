@@ -24,7 +24,7 @@ glados.useNameSpace 'glados.models.SharePage',
       urlToShorten = window.location.href.match(glados.Settings.SHORTENING_MATCH_REPEXG)[0]
       paramsDict =
         long_url: urlToShorten
-      shortenURL = glados.doCSRFPost(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
+      shortenURL = $.post(glados.Settings.SHORTEN_URLS_ENDPOINT, paramsDict)
 
       thisModel = @
       shortenURL.then (data) ->
@@ -41,10 +41,8 @@ glados.useNameSpace 'glados.models.SharePage',
 
     expandURL: ->
 
-      console.log 'expand url!'
       @set('state', glados.models.SharePage.SharePageModel.States.EXPANDING_URL)
-      console.log @get('url_hash')
-      getExpandedURL = $.getJSON(glados.Settings.EXTEND_URLS_ENDPOINT_URL + @get('url_hash'))
+      getExpandedURL = $.getJSON(glados.Settings.EXTEND_URLS_ENDPOINT_GENERATOR({'hash': @get('url_hash')}))
 
       thisModel = @
       getExpandedURL.then (data) ->
