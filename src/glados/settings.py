@@ -283,7 +283,7 @@ STATICFILES_DIRS = (
     os.path.join(GLADOS_ROOT, 'static/'),
 )
 
-STATIC_ROOT = os.path.join(GLADOS_ROOT, 'static_root')
+STATIC_ROOT = run_config.get('static_root', os.path.join(GLADOS_ROOT, 'static_root'))
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
