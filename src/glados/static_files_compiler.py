@@ -123,7 +123,7 @@ class StaticFilesCompiler(object):
             compiled_dir_path = self.get_compiled_path(os.path.dirname(event.src_path))
             compiled_out_path = self.get_compiled_out_path(os.path.basename(event.src_path), compiled_dir_path)
             if compiled_out_path is not None:
-                logger.debug("COMPILING: {0}\nINTO: {1}\n...".format(event.src_path, compiled_out_path))
+                logger.info("COMPILING: {0}\nINTO: {1}\n...".format(event.src_path, compiled_out_path))
                 compilation_stats = self.compile_and_save(event.src_path, compiled_out_path)
                 if compilation_stats[1] == 1:
                     logger.error('THIS FILE SHOULD NOT BE PRECOMPILED!')
@@ -134,7 +134,7 @@ class StaticFilesCompiler(object):
         observer.daemon = True
         observer.schedule(file_event_handler, self.src_path, recursive=True)
         observer.start()
-        logger.debug('File watcher started for {} files at {}'.format(self.ext_to_compile, self.src_path))
+        logger.info('File watcher started for {} files at {}'.format(self.ext_to_compile, self.src_path))
 
     @staticmethod
     def should_skip_compile(md5_file_in, file_out):
@@ -148,7 +148,7 @@ class StaticFilesCompiler(object):
     def compile_and_save(self, file_in, file_out):
         md5_file_in = md5(file_in)
         if self.should_skip_compile(md5_file_in, file_out):
-            logger.debug('SKIPPING COMPILATION: {0} compiled file already exists!'.format(file_in))
+            logger.info('SKIPPING COMPILATION: {0} compiled file already exists!'.format(file_in))
             return 0, 1
         try:
             compile_result = self.compiler_function(file_in)
@@ -156,7 +156,7 @@ class StaticFilesCompiler(object):
                 file_out_i.write(compile_result)
             with open(file_out + '.src_md5', 'w') as file_out_i:
                 file_out_i.write(md5_file_in)
-            logger.debug('COMPILED: {0}'.format(file_in))
+            logger.info('COMPILED: {0}'.format(file_in))
             return 1, 0
         except Exception as e:
             try:
@@ -203,7 +203,7 @@ class StaticFilesCompiler(object):
                 mkdirs_called = False
                 for file_i in files:
                     if self.exclude_regex is not None and self.exclude_regex.match(file_i):
-                        logger.debug('EXCLUDED: {0}/{1}'.format(cur_dir, file_i))
+                        logger.info('EXCLUDED: {0}/{1}'.format(cur_dir, file_i))
                         continue
                     # only create dirs and files if the compilation is successful and the files are not excluded
                     if not mkdirs_called:
@@ -213,7 +213,7 @@ class StaticFilesCompiler(object):
                     compiled_out_path = self.get_compiled_out_path(file_i, compiled_dir_path)
                     if compiled_out_path is not None:
                         num_files_to_compile += 1
-                        logger.debug('SUBMITTING: {0}/{1}'.format(cur_dir, file_i))
+                        logger.info('SUBMITTING: {0}/{1}'.format(cur_dir, file_i))
                         tpe_task = tpe.submit(self.compile_and_save, file_src_i, compiled_out_path)
                         tpe_tasks.append(tpe_task)
             tpe.shutdown(wait=True)
