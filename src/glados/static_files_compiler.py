@@ -149,7 +149,7 @@ class StaticFilesCompiler(object):
     def compile_and_save(self, file_in, file_out):
         md5_file_in = md5(file_in)
         if self.should_skip_compile(md5_file_in, file_out):
-            logger.info('SKIPPING COMPILATION: {0} compiled file already exists!'.format(file_in))
+            logger.info(f'SKIPPING COMPILATION: {file_in} compiled file already exists at {file_out}')
             return 0, 1
         try:
             compile_result = self.compiler_function(file_in)
@@ -157,7 +157,7 @@ class StaticFilesCompiler(object):
                 file_out_i.write(compile_result)
             with open(file_out + '.src_md5', 'w') as file_out_i:
                 file_out_i.write(md5_file_in)
-            logger.info('COMPILED: {0}'.format(file_in))
+            logger.info(f'COMPILED: {file_in} to {file_out}')
             return 1, 0
         except Exception as e:
             try:
