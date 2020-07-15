@@ -155,6 +155,9 @@ class StaticFilesCompiler(object):
         try:
             start_time = time.time()
             compile_result = self.compiler_function(file_in)
+            end_time_compile_result = time.time()
+            time_taken_compile_result = end_time_compile_result - start_time
+            logger.info(f'time_taken_compile_result:  {time_taken_compile_result}')
 
             with open(file_out, 'w') as file_out_i:
                 file_out_i.write(compile_result)
