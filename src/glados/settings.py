@@ -45,7 +45,7 @@ custom_config_file_path = os.getenv('CONFIG_FILE_PATH')
 if custom_config_file_path is not None:
     CONFIG_FILE_PATH = custom_config_file_path
 else:
-    CONFIG_FILE_PATH = os.getenv("HOME") + '/.chembl-glados/config.yml'
+    CONFIG_FILE_PATH = 'config.yml'
 print('CONFIG_FILE_PATH: ', CONFIG_FILE_PATH)
 run_config = yaml.load(open(CONFIG_FILE_PATH, 'r'), Loader=yaml.FullLoader)
 
@@ -63,7 +63,7 @@ print('DEBUG: ', DEBUG)
 
 # Build paths inside the project like this: os.path.join(GLADOS_ROOT, ...)
 GLADOS_ROOT = os.path.dirname(os.path.abspath(glados.__file__))
-VUE_ROOT = os.path.join(GLADOS_ROOT, 'v')
+print('GLADOS_ROOT: ', )
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -276,14 +276,15 @@ LANGUAGES = [
 
 USE_X_FORWARDED_HOST = True
 
-STATIC_URL = f'{SERVER_BASE_PATH}/static/'
+STATIC_URL = f'http://someserver.com/static/'
+print('STATIC_URL: ', STATIC_URL)
 
+
+STATIC_ROOT = run_config.get('static_root', os.path.join(GLADOS_ROOT, 'static_root'))
 
 STATICFILES_DIRS = (
     os.path.join(GLADOS_ROOT, 'static/'),
 )
-
-STATIC_ROOT = run_config.get('static_root', os.path.join(GLADOS_ROOT, 'static_root'))
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
