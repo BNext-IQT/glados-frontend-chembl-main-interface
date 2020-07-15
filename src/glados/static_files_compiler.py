@@ -10,6 +10,7 @@ from watchdog.events import FileSystemEventHandler
 import math
 import logging
 import hashlib
+import multiprocessing
 
 logger = logging.getLogger('glados.static_files_compiler')
 
@@ -194,6 +195,9 @@ class StaticFilesCompiler(object):
     def compile_all(self):
         import time
         t_ini = time.time()
+
+        logger.info(f'Starting compilation process with {multiprocessing.cpu_count()} CPUs available')
+
         tpe_tasks = []
         num_files_to_compile = 0
         with futures.ThreadPoolExecutor(max_workers=5) as tpe:
