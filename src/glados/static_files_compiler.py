@@ -11,6 +11,7 @@ import math
 import logging
 import hashlib
 import multiprocessing
+import time
 
 logger = logging.getLogger('glados.static_files_compiler')
 
@@ -152,12 +153,17 @@ class StaticFilesCompiler(object):
             logger.info(f'SKIPPING COMPILATION: {file_in} compiled file already exists at {file_out}')
             return 0, 1
         try:
+            start_time = time.time()
             compile_result = self.compiler_function(file_in)
+
             with open(file_out, 'w') as file_out_i:
                 file_out_i.write(compile_result)
             with open(file_out + '.src_md5', 'w') as file_out_i:
                 file_out_i.write(md5_file_in)
-            logger.info(f'COMPILED: {file_in} to {file_out}')
+
+            end_time = time.time()
+            time_taken = end_time - start_time
+            logger.info(f'COMPILED: {file_in} to {file_out} took {time_taken}')
             return 1, 0
         except Exception as e:
             try:
@@ -193,9 +199,8 @@ class StaticFilesCompiler(object):
         return compiled_out_path
 
     def compile_all(self):
-        import time
-        t_ini = time.time()
 
+        t_ini = time.time()
         logger.info(f'Starting compilation process with {multiprocessing.cpu_count()} CPUs available')
 
         tpe_tasks = []

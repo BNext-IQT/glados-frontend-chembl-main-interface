@@ -22,10 +22,9 @@ def main():
         glados.static_files_compiler.StaticFilesCompiler.compile_all_known_compilers()
         execute_from_command_line([sys.argv[0], 'compilemessages'])
 
+    # elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'collectstatic':
+
     elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'collectstatic':
-        
-        # # Builds static VueJS app
-        # logging.info(subprocess.check_output(['npm', 'run', 'build'], cwd='chemvue'))
         
         glados.static_files_compiler.StaticFilesCompiler.compile_all_known_compilers()
         execute_from_command_line([sys.argv[0], 'compilemessages', '--settings=glados'])
