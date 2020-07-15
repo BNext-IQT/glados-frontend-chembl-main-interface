@@ -37,6 +37,8 @@ spec:
             - name: gunicorn-config
               mountPath: '/etc/gunicorn_config/'
               readOnly: true
+            - name: chembl-static-files-nfs-volume
+              mountPath: '/statics'
       volumes:
         - name: run-config
           secret:
@@ -44,6 +46,9 @@ spec:
         - name: gunicorn-config
           secret:
             secretName: <GUNICORN_CONFIG_SECRET_NAME>
+        - name: chembl-static-files-nfs-volume
+          persistentVolumeClaim:
+            claimName: chembl-static-files-nfs-claim
 
 ---
 apiVersion: v1
