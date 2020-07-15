@@ -276,22 +276,31 @@ LANGUAGES = [
 
 USE_X_FORWARDED_HOST = True
 
-STATIC_URL = f'http://someserver.com/static/'
+STATIC_URL = f'{SERVER_BASE_PATH}/static/'
 print('STATIC_URL: ', STATIC_URL)
 
+CUSTOM_STATIC_FILES_CONFIG = run_config.get('static_files', {})
 
-STATIC_ROOT = run_config.get('static_root', os.path.join(GLADOS_ROOT, 'static_root'))
+STATIC_FILES_SOURCE = CUSTOM_STATIC_FILES_CONFIG.get('static_files_source')
+print('STATIC_FILES_SOURCE: ', STATIC_FILES_SOURCE)
 
-STATICFILES_DIRS = (
-    os.path.join(GLADOS_ROOT, 'static/'),
-)
+if STATIC_FILES_SOURCE is not None:
+    STATICFILES_DIRS = (STATIC_FILES_SOURCE,)
+else:
+    STATICFILES_DIRS = (
+        os.path.join(GLADOS_ROOT, 'static/'),
+    )
+
+STATIC_ROOT = CUSTOM_STATIC_FILES_CONFIG.get('static_files_destination', os.path.join(GLADOS_ROOT, 'static_root'))
+print('STATIC FILES DESTINATION (STATIC_ROOT)', STATIC_ROOT)
+
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'compressor.finders.CompressorFinder',
 )
 
-WATCH_AND_UPDATE_STATIC_COMPILED_FILES = RUN_ENV in [RunEnvs.DEV, RunEnvs.TRAVIS]
+WATCH_AND_UPDATE_STATIC_COMPILED_FILES = CUSTOM_STATIC_FILES_CONFIG.get('watch_and_update_static_compiled_files', True)
 print('WATCH_AND_UPDATE_STATIC_COMPILED_FILES: ', WATCH_AND_UPDATE_STATIC_COMPILED_FILES)
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -299,7 +308,7 @@ print('WATCH_AND_UPDATE_STATIC_COMPILED_FILES: ', WATCH_AND_UPDATE_STATIC_COMPIL
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 # ----------------------------------------------------------------------------------------------------------------------
 
-COMPRESS_ENABLED = RUN_ENV in [RunEnvs.TEST, RunEnvs.PROD]
+COMPRESS_ENABLED = CUSTOM_STATIC_FILES_CONFIG.get('enable_statics_compression', False)
 print('COMPRESS_ENABLED: ', COMPRESS_ENABLED)
 
 if COMPRESS_ENABLED:
