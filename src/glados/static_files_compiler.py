@@ -208,7 +208,7 @@ class StaticFilesCompiler(object):
 
         tpe_tasks = []
         num_files_to_compile = 0
-        with futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as tpe:
+        with futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()*5) as tpe:
             logger.info("COMPILING: {0} files.".format(self.ext_to_compile))
             for cur_dir, dirs, files in os.walk(top=self.src_path):
                 compiled_dir_path = self.get_compiled_path(cur_dir)
