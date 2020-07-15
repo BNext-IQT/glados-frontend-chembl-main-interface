@@ -17,22 +17,26 @@ spec:
       - name: glados-static-files-collector
         image: <SERVER_IMAGE_TAG>
         command: ['python', 'manage.py', 'collectstatic', '--no-input']
-      containers:
-      - name: glados-frontend-chembl-main-interface
-        image: <SERVER_IMAGE_TAG>
-        imagePullPolicy: Always
-        resources:
-          limits:
-            cpu: <CPU_LIMIT>
-          requests:
-            cpu: <CPU_REQUESTED>
         volumeMounts:
-        - name: run-config
-          mountPath: '/etc/run_config/'
-          readOnly: true
-        - name: gunicorn-config
-          mountPath: '/etc/gunicorn_config/'
-          readOnly: true
+          - name: run-config
+            mountPath: '/etc/run_config/'
+            readOnly: true
+      containers:
+        - name: glados-frontend-chembl-main-interface
+          image: <SERVER_IMAGE_TAG>
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: <CPU_LIMIT>
+            requests:
+              cpu: <CPU_REQUESTED>
+          volumeMounts:
+            - name: run-config
+              mountPath: '/etc/run_config/'
+              readOnly: true
+            - name: gunicorn-config
+              mountPath: '/etc/gunicorn_config/'
+              readOnly: true
       volumes:
         - name: run-config
           secret:
