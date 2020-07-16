@@ -105,10 +105,14 @@ def copy_and_compress_file(origin_path, filename, source_base_path, destination_
             logger.info(f'{destination_full_lock_path} lock exists and is still valid')
             return False
 
+    destination_dir = os.path.dirname(destination_full_path)
+    os.makedirs(destination_dir, exist_ok=True)
+
     create_lock_file(destination_full_lock_path)
     do_copy_file(source_full_path, destination_full_path)
     gz_compress_file(destination_full_path)
     write_md5_file(new_md5, destination_full_md5_path)
+    os.remove(destination_full_lock_path)
 
     return True
 
@@ -152,8 +156,6 @@ def do_copy_file(source_path, destination_path):
     :param source_path: source path of the file
     :param destination_path: destination path
     """
-    destination_dir = os.path.dirname(destination_path)
-    os.makedirs(destination_dir, exist_ok=True)
     shutil.copyfile(source_path, destination_path)
 
 
