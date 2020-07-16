@@ -58,10 +58,12 @@ def copy_and_compress_files_to_statics_server():
         else:
             skipped_files += 1
 
+    success_percentage = ((copied_files + skipped_files) / num_files_to_copy) * 100
     end_time = time.time()
     time_taken = end_time - start_time
     logger.info(
         f'RESULT: {copied_files} copied, {skipped_files} skipped, {num_files_to_copy} analysed. '
+        f'{success_percentage}% success. '
         f'Took {time_taken} seconds.'
     )
 
