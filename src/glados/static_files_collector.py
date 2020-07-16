@@ -10,7 +10,8 @@ import time
 import hashlib
 import shutil
 import gzip
-
+from datetime import datetime, timezone, timedelta
+import json
 
 from django.conf import settings
 
@@ -87,20 +88,28 @@ def copy_and_compress_file(origin_path, filename, source_base_path, destination_
 
     new_md5 = get_md5_of_file(source_full_path)
     md5_exists = os.path.exists(destination_full_md5_path)
-    # if md5_exists:
-    #     old_md5 = read_md5_file(destination_full_md5_path)
-    #     file_changed = new_md5 != old_md5
-    #     if not file_changed:
-    #         logger.info(f'{destination_full_path} has not changed')
-    #         return False
+    if md5_exists:
+        old_md5 = read_md5_file(destination_full_md5_path)
+        file_changed = new_md5 != old_md5
+        if not file_changed:
+            logger.info(f'{destination_full_path} has not changed')
+            return False
 
 
-    logger.info(f'new_md5: {new_md5}')
+    lock_exists = os.path.exists(destination_full_lock_path)
+    if lock_exists:
+        lock_expiration_date = get_lock_expiration_date(destination_full_lock_path)
+        now = datetime.utcnow().replace(tzinfo=timezone.utc)
+        lock_is_valid = lock_expiration_date > now
+        if lock_is_valid:
+            logger.info(f'{destination_full_lock_path} lock exists and is still valid')
+            return False
 
+    create_lock_file(destination_full_lock_path)
     do_copy_file(source_full_path, destination_full_path)
+    gz_compress_file(destination_full_path)
     write_md5_file(new_md5, destination_full_md5_path)
 
-    logger.info('---')
     return True
 
 
@@ -126,6 +135,7 @@ def write_md5_file(md5_hash, md5_file_path):
     with open(md5_file_path, 'wt') as file:
         file.write(md5_hash)
 
+
 def read_md5_file(md5_file_path):
     """
     reads the md5 hash of the file path indicated as parameter
@@ -146,18 +156,47 @@ def do_copy_file(source_path, destination_path):
     os.makedirs(destination_dir, exist_ok=True)
     shutil.copyfile(source_path, destination_path)
 
+
 def gz_compress_file(file_path):
     """
     compresses the file pointed by the path given as parameter
     :param file_path: path of the file to compress
     """
     compressed_path = f'{file_path}.gz'
-    block_size = 1 << 16  # 64kB
 
     with open(file_path, 'rb') as uncompressed_file:
-        with open(compressed_path, 'wb') as file_out:
-            while True:
-                block = uncompressed_file.read(block_size)
-                if block == '':
-                    break
-            file_out.write(block)
+        with gzip.open(compressed_path, 'wb') as file_out:
+            shutil.copyfileobj(uncompressed_file, file_out)
+
+    logger.info(f'file compressed: {compressed_path}')
+
+
+def create_lock_file(lock_file_path):
+    """
+    creates a lock file in case other process attempts to do the copy
+    :param lock_file_path: path of the lock file to create
+    """
+
+    lock_expiration_seconds = 20
+
+    now = datetime.utcnow().replace(tzinfo=timezone.utc)
+    time_delta = timedelta(seconds=lock_expiration_seconds)
+    expiration_date = now + time_delta
+
+    lock = {
+        'expires': expiration_date.timestamp() * 1000
+    }
+
+    with open(lock_file_path, 'wt') as file:
+        json.dump(lock, file)
+
+
+def get_lock_expiration_date(lock_file_path):
+    """
+    Reads the the lock file and returns the expiration date
+    :return: the expiration date
+    """
+    with open(lock_file_path, 'rt') as file:
+        lock = json.load(file)
+        expiration_date = datetime.utcfromtimestamp(lock['expires'] / 1000).replace(tzinfo=timezone.utc)
+        return expiration_date
