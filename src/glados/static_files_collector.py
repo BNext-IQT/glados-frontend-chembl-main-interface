@@ -7,6 +7,8 @@ import os
 from concurrent import futures
 import multiprocessing
 import time
+import hashlib
+import shutil
 
 from django.conf import settings
 
@@ -26,6 +28,7 @@ def copy_and_compress_files_to_statics_server():
     source_path = settings.STATIC_ROOT
     destination_path = settings.STATIC_FILES_SERVER_DESTINATION
     logger.info(f'Starting to copy files from {source_path} to {destination_path}')
+    os.makedirs(destination_path, exist_ok=True)
 
     thread_pool_executor_tasks = []
     num_files_to_copy = 0
@@ -37,7 +40,7 @@ def copy_and_compress_files_to_statics_server():
             for current_file in files:
                 num_files_to_copy += 1
                 current_task = thread_pool_executor.submit(copy_and_compress_file, current_dir, current_file,
-                                                           destination_path)
+                                                           source_path, destination_path)
 
                 thread_pool_executor_tasks.append(current_task)
 
@@ -60,19 +63,83 @@ def copy_and_compress_files_to_statics_server():
     )
 
 
-def copy_and_compress_file(origin_path, filename, destination_base_path):
+def copy_and_compress_file(origin_path, filename, source_base_path, destination_base_path):
     """
     Copies the file from the origin path to the destination base path. Takes into account
     that the file may have been already written or is being written by other process
     :param origin_path: source path of the file
     :param filename: name of the file to copy
+    :param source_base_path: source base path of the files
     :param destination_base_path: destination dir to copy the file
     :return : True if the destination file was modified, False otherwise
     """
 
-
     source_full_path = f'{origin_path}/{filename}'
-    logger.info(f'Attempting to copy file from  {source_full_path} to base dir {destination_base_path}')
+    source_relative_path = source_full_path.replace(source_base_path, '')
+    destination_full_path = f'{destination_base_path}{source_relative_path}'
+    destination_full_md5_path = f'{destination_full_path}.md5'
+    destination_full_lock_path = f'{destination_full_path}.lock.json'
+
+    logger.info(f'Attempting to copy file from {source_full_path} to {destination_full_path} '
+                f'MD5 File: {destination_full_md5_path} Lock File: {destination_full_lock_path}')
+
+    new_md5 = get_md5_of_file(source_full_path)
+    md5_exists = os.path.exists(destination_full_md5_path)
+    if md5_exists:
+        old_md5 = read_md5_file(destination_full_md5_path)
+        file_changed = new_md5 != old_md5
+        if not file_changed:
+            logger.info(f'{destination_full_path} has not changed')
+            return False
+
+
+    logger.info(f'new_md5: {new_md5}')
+
+    do_copy_file(source_full_path, destination_full_path)
+    write_md5_file(new_md5, destination_full_md5_path)
 
     logger.info('---')
     return True
+
+
+def get_md5_of_file(file_path):
+    """
+    :param file_path: path of the file for which to ge the hash
+    :return: md5 hash of the file pointed by the given path
+    """
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as file:
+        for chunk in iter(lambda: file.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+
+def write_md5_file(md5_hash, md5_file_path):
+    """
+    writes the md5 hash to the file path indicated as parameter
+    :param md5_hash: md5 to save
+    :param md5_file_path: path where to save the md5 value
+    """
+
+    with open(md5_file_path, 'wt') as file:
+        file.write(md5_hash)
+
+def read_md5_file(md5_file_path):
+    """
+    reads the md5 hash of the file path indicated as parameter
+    :param md5_file_path: path for which to read the md5 value
+    """
+
+    with open(md5_file_path, 'rt') as file:
+        return file.read()
+
+
+def do_copy_file(source_path, destination_path):
+    """
+    copies the file from the source to the destination
+    :param source_path: source path of the file
+    :param destination_path: destination path
+    """
+    destination_dir = os.path.dirname(destination_path)
+    os.makedirs(destination_dir, exist_ok=True)
+    shutil.copyfile(source_path, destination_path)
