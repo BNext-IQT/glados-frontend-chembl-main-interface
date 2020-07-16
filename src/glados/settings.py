@@ -294,6 +294,8 @@ else:
 STATIC_ROOT = CUSTOM_STATIC_FILES_CONFIG.get('static_files_destination', os.path.join(GLADOS_ROOT, 'static_root'))
 print('STATIC FILES DESTINATION (STATIC_ROOT)', STATIC_ROOT)
 
+STATIC_FILES_SERVER_DESTINATION = CUSTOM_STATIC_FILES_CONFIG.get('static_files_server_destination',
+                                                                 os.path.join(GLADOS_ROOT, 'static_root_final'))
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
