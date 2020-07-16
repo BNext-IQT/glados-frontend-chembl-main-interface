@@ -9,6 +9,8 @@ import multiprocessing
 import time
 import hashlib
 import shutil
+import gzip
+
 
 from django.conf import settings
 
@@ -85,12 +87,12 @@ def copy_and_compress_file(origin_path, filename, source_base_path, destination_
 
     new_md5 = get_md5_of_file(source_full_path)
     md5_exists = os.path.exists(destination_full_md5_path)
-    if md5_exists:
-        old_md5 = read_md5_file(destination_full_md5_path)
-        file_changed = new_md5 != old_md5
-        if not file_changed:
-            logger.info(f'{destination_full_path} has not changed')
-            return False
+    # if md5_exists:
+    #     old_md5 = read_md5_file(destination_full_md5_path)
+    #     file_changed = new_md5 != old_md5
+    #     if not file_changed:
+    #         logger.info(f'{destination_full_path} has not changed')
+    #         return False
 
 
     logger.info(f'new_md5: {new_md5}')
@@ -143,3 +145,19 @@ def do_copy_file(source_path, destination_path):
     destination_dir = os.path.dirname(destination_path)
     os.makedirs(destination_dir, exist_ok=True)
     shutil.copyfile(source_path, destination_path)
+
+def gz_compress_file(file_path):
+    """
+    compresses the file pointed by the path given as parameter
+    :param file_path: path of the file to compress
+    """
+    compressed_path = f'{file_path}.gz'
+    block_size = 1 << 16  # 64kB
+
+    with open(file_path, 'rb') as uncompressed_file:
+        with open(compressed_path, 'wb') as file_out:
+            while True:
+                block = uncompressed_file.read(block_size)
+                if block == '':
+                    break
+            file_out.write(block)
