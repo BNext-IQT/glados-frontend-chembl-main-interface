@@ -70,6 +70,9 @@ def copy_and_compress_file(origin_path, filename, destination_base_path):
     :return : True if the destination file was modified, False otherwise
     """
 
-    logger.info(f'Attempting to copy file from  {origin_path} {filename} to base dir {destination_base_path}')
+
+    source_full_path = f'{origin_path}/{filename}'
+    logger.info(f'Attempting to copy file from  {source_full_path} to base dir {destination_base_path}')
+
     logger.info('---')
     return True
