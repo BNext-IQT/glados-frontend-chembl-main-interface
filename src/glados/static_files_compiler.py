@@ -208,7 +208,7 @@ class StaticFilesCompiler(object):
 
         tpe_tasks = []
         num_files_to_compile = 0
-        with futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()*5) as tpe:
+        with futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as tpe:
             logger.info("COMPILING: {0} files.".format(self.ext_to_compile))
             for cur_dir, dirs, files in os.walk(top=self.src_path):
                 compiled_dir_path = self.get_compiled_path(cur_dir)
@@ -237,7 +237,6 @@ class StaticFilesCompiler(object):
             compiled += task_stats[0]
             precompiled_found += task_stats[1]
         logger.info(
-            "COMPILATION RESULT: {0} precompiled file(s) found and {1} file(s) compiled in {2} second(s)."
-            .format(precompiled_found, compiled, math.floor(time.time()-t_ini+1))
+            f'COMPILATION RESULT: {precompiled_found} precompiled file(s) found and {compiled} file(s) compiled in {math.floor(time.time()-t_ini+1)} second(s).'
         )
         return (precompiled_found + compiled) == num_files_to_compile
