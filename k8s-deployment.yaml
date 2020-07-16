@@ -16,7 +16,8 @@ spec:
       initContainers:
       - name: glados-static-files-collector
         image: <SERVER_IMAGE_TAG>
-        command: ['python', 'manage.py', 'collectstatic', '--no-input']
+        command: ['ls']
+#        command: ['python', 'manage.py', 'collectstatic', '--no-input']
         volumeMounts:
           - name: run-config
             mountPath: '/etc/run_config/'

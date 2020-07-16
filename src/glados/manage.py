@@ -22,8 +22,6 @@ def main():
         glados.static_files_compiler.StaticFilesCompiler.compile_all_known_compilers()
         execute_from_command_line([sys.argv[0], 'compilemessages'])
 
-    # elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'collectstatic':
-
     elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'collectstatic':
         
         glados.static_files_compiler.StaticFilesCompiler.compile_all_known_compilers()
@@ -31,19 +29,9 @@ def main():
         if settings.COMPRESS_ENABLED and settings.COMPRESS_OFFLINE:
             execute_from_command_line([sys.argv[0], 'compress'])
 
-    elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'createapacheconfig':
-
-        glados.apache_config_generator.generate_config()
-
-    elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'createdefaultadminuser':
-
-        glados.admin_user_generator.generate_admin_user()
-
 
     # all our custom commands are listed here so they are not sent to the original manage.py
-    execute_in_manage = sys.argv[1] not in ['createapacheconfig', 'createdefaultadminuser', 'simulatedaemon',
-                                            'deleteexpiredurls', 'waitunitlworkersarefree', 'deleteexpireddownloads',
-                                            'deleteexpiredsearches', 'getpropertiescounts']
+    execute_in_manage = sys.argv[1] not in ['']
     if execute_in_manage:
         execute_from_command_line(sys.argv)
 
