@@ -17,7 +17,12 @@ spec:
         - name: glados-static-files-collector
           image: <SERVER_IMAGE_TAG>
           imagePullPolicy: Always
-          command: ['python', 'manage.py', 'sendstaticstoserver']
+          command:
+          [
+            'sh', '-c', 'whoami;',
+            'sh', '-c', 'ls /static;',
+            'python', 'manage.py', 'sendstaticstoserver'
+          ]
           volumeMounts:
             - name: run-config
               mountPath: '/etc/run_config/'
