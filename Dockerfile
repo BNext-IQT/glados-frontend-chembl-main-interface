@@ -16,6 +16,7 @@ RUN apt-get install -y \
 WORKDIR /app
 COPY requirements.txt .
 
+RUN groupadd -g <GID> glados
 RUN useradd -m glados -u <UID> -g <GID>
 RUN chown -R glados:glados /app
 USER glados
