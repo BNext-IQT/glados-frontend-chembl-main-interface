@@ -19,7 +19,7 @@ spec:
           imagePullPolicy: Always
           command: [
             'id;',
-            'ls /static;',
+            'ls ', '/static;',
             'python', 'manage.py', 'sendstaticstoserver'
           ]
           volumeMounts:
