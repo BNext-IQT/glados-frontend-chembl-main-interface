@@ -6,8 +6,8 @@ variables:
   SERVER_IMAGE_TAG: ${CI_REGISTRY}/${REGISTRY_USER}/${SERVER_APPLICATION}:${CI_COMMIT_SHORT_SHA}
   DOCKER_DRIVER: overlay
   CONFIGS_FOLDER: run_config
-  LATEST_BUILD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/$APPLICATION:latest-build
-  LATEST_PROD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/$APPLICATION:latest-prod
+  LATEST_BUILD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/$APPLICATION:latest_build
+  LATEST_PROD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/$APPLICATION:latest_prod
   # Config unit tests
   CONFIG_UNIT_TESTS_FILE_PATH: ${CONFIGS_FOLDER}/unit_tests.yml
   # Config staging
@@ -62,13 +62,13 @@ build_docker_image:
     - echo 'building!'
     - docker version # verify docker cli is there. Also prints server info
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - echo building $SERVER_IMAGE_TAG
-    - docker pull $LATEST_BUILD_IMAGE_TAG || true
+    - echo building ${SERVER_IMAGE_TAG}
+    - docker pull ${LATEST_BUILD_IMAGE_TAG} || true
     - docker-compose build glados-prod
-    - echo Deploying $SERVER_IMAGE_TAG
-    - docker push $SERVER_IMAGE_TAG
-    - docker tag $SERVER_IMAGE_TAG $LATEST_BUILD_IMAGE_TAG
-    - docker push $LATEST_BUILD_IMAGE_TAG
+    - echo Deploying ${SERVER_IMAGE_TAG}
+    - docker push ${SERVER_IMAGE_TAG}
+    - docker tag ${SERVER_IMAGE_TAG} ${LATEST_BUILD_IMAGE_TAG}
+    - docker push ${LATEST_BUILD_IMAGE_TAG}
 
 ## ----------------------------------------------------------------------------------------------------------------------
 ## QA
