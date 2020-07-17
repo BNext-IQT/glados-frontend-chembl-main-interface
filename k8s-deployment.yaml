@@ -17,11 +17,13 @@ spec:
         - name: glados-static-files-collector
           image: <SERVER_IMAGE_TAG>
           imagePullPolicy: Always
-          command: [ 'sh', '-c', 'ls -lah /statics']
+          command: [ 'sh', '-c', 'id && ls -lah /statics']
           volumeMounts:
             - name: run-config
               mountPath: '/etc/run_config/'
               readOnly: true
+            - name: chembl-static-files-nfs-volume
+              mountPath: '/statics'
           securityContext:
             runAsUser: <STATICS_UID>
             runAsGroup: <STATICS_GID>
