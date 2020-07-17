@@ -16,7 +16,7 @@ RUN apt-get install -y \
 WORKDIR /app
 COPY requirements.txt .
 
-RUN useradd -m glados -u 2892
+RUN useradd -m glados -u <UID> -g <GID>
 RUN chown -R glados:glados /app
 USER glados
 ENV PATH="/home/glados/.local/bin:${PATH}"
