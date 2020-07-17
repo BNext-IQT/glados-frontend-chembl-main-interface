@@ -23,7 +23,7 @@ spec:
               mountPath: '/etc/run_config/'
               readOnly: true
             - name: chembl-static-files-nfs-volume
-              mountPath: '/statics'
+              mountPath: '/statics/'
           securityContext:
             runAsUser: <STATICS_UID>
             runAsGroup: <STATICS_GID>
