@@ -64,7 +64,7 @@ build_docker_image:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - echo building $SERVER_IMAGE_TAG
     - docker pull $LATEST_BUILD_IMAGE_TAG || true
-    - docker-compose build glados-prod --cache-from $LATEST_BUILD_IMAGE_TAG
+    - docker-compose build glados-prod
     - echo Deploying $SERVER_IMAGE_TAG
     - docker push $SERVER_IMAGE_TAG
     - docker tag $SERVER_IMAGE_TAG $LATEST_BUILD_IMAGE_TAG
