@@ -18,9 +18,7 @@ spec:
           image: <SERVER_IMAGE_TAG>
           imagePullPolicy: Always
           command: [
-            'id;',
-            'ls ', '/static;',
-            'python', 'manage.py', 'sendstaticstoserver'
+            'id; ls /static; python manage.py sendstaticstoserver',
           ]
           volumeMounts:
             - name: run-config
