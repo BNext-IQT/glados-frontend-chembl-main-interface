@@ -22,7 +22,7 @@ USER glados
 ENV PATH="/home/glados/.local/bin:${PATH}"
 
 RUN pip install -U "setuptools<46"
-RUN pip install -r requirements.txt
+RUN pip install --user -r requirements.txt
 COPY . .
 RUN CONFIG_FILE_PATH='/app/configurations/build_config.yml' python manage.py collectstatic --no-input
 
