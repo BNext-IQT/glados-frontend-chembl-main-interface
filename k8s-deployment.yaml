@@ -18,8 +18,8 @@ spec:
           image: <SERVER_IMAGE_TAG>
           imagePullPolicy: Always
           command: [
-            'sh', '-c', 'id;',
-            'sh', '-c', 'ls /static;',
+            'id;',
+            'ls /static;',
             'python', 'manage.py', 'sendstaticstoserver'
           ]
           volumeMounts:
