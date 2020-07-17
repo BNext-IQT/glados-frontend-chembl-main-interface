@@ -276,10 +276,10 @@ LANGUAGES = [
 
 USE_X_FORWARDED_HOST = True
 
-STATIC_URL = f'{SERVER_BASE_PATH}/static/'
-print('STATIC_URL: ', STATIC_URL)
-
 CUSTOM_STATIC_FILES_CONFIG = run_config.get('static_files', {})
+
+STATIC_URL = CUSTOM_STATIC_FILES_CONFIG.get('statics_base_url', f'{SERVER_BASE_PATH}/static/')
+print('STATIC_URL: ', STATIC_URL)
 
 STATIC_FILES_SOURCE = CUSTOM_STATIC_FILES_CONFIG.get('static_files_source')
 print('STATIC_FILES_SOURCE: ', STATIC_FILES_SOURCE)
