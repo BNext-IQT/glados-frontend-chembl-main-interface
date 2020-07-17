@@ -18,7 +18,7 @@ spec:
           image: <SERVER_IMAGE_TAG>
           imagePullPolicy: Always
           command: [
-            'sh', '-c', 'whoami;',
+            'sh', '-c', 'id;',
             'sh', '-c', 'ls /static;',
             'python', 'manage.py', 'sendstaticstoserver'
           ]
