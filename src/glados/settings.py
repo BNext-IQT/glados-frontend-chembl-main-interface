@@ -365,7 +365,8 @@ ES_PROXY_CACHE_SECONDS = run_config.get('es_proxy_cache_seconds', 604800)  # 7 d
 # ----------------------------------------------------------------------------------------------------------------------
 # Logging
 # ----------------------------------------------------------------------------------------------------------------------
-DJANGO_DEBUG_LEVEL = 'INFO'
+CUSTOM_LOGGING_CONFIG = run_config.get('logging', {})
+DJANGO_DEBUG_LEVEL = CUSTOM_LOGGING_CONFIG.get('django_level', 'INFO')
 
 LOGGING = {
     'version': 1,

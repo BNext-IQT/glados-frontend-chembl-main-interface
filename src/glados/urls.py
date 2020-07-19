@@ -259,6 +259,11 @@ common_urls = [
 # SERVER BASE PATH DEFINITION
 # ----------------------------------------------------------------------------------------------------------------------
 
+# add slash to the end of base path to avoid routing issues
+BASE_PATH_TO_APPEND = settings.SERVER_BASE_PATH
+if BASE_PATH_TO_APPEND != '' and BASE_PATH_TO_APPEND[-1] != '/':
+    BASE_PATH_TO_APPEND = f'{BASE_PATH_TO_APPEND}/'
+
 urlpatterns = [url(r'^' + settings.SERVER_BASE_PATH, include(common_urls))]
 
 # ----------------------------------------------------------------------------------------------------------------------
