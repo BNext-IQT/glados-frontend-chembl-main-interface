@@ -5,12 +5,12 @@
 /* Biological concepts and top-level icons (e.g. Services, Research, etc. */
 @font-face {
   font-family: 'EBI-Conceptual';
-  src: url('../font/EBI-Conceptual/EBI-Conceptual.eot');
-  src: url('../font/EBI-Conceptual/EBI-Conceptual.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-Conceptual/EBI-Conceptual.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Conceptual/EBI-Conceptual.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Conceptual/EBI-Conceptual.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Conceptual/EBI-Conceptual.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-Conceptual/EBI-Conceptual.svg#EBI-Conceptual') format('svg'),
-  url('../font/EBI-Conceptual/EBI-Conceptual.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Conceptual/EBI-Conceptual.svg#EBI-Conceptual') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Conceptual/EBI-Conceptual.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -18,12 +18,12 @@
 /* Generic, functional or activity-orientated icons */
 @font-face {
   font-family: 'EBI-Functional';
-  src: url('../font/EBI-Functional/EBI-Functional.eot');
-  src: url('../font/EBI-Functional/EBI-Functional.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-Functional/EBI-Functional.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Functional/EBI-Functional.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Functional/EBI-Functional.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Functional/EBI-Functional.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-Functional/EBI-Functional.svg#EBI-Functional') format('svg'),
-  url('../font/EBI-Functional/EBI-Functional.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Functional/EBI-Functional.svg#EBI-Functional') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Functional/EBI-Functional.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -31,12 +31,12 @@
 /* Generic icons that can be used as decoration or emphasis */
 @font-face {
   font-family: 'EBI-Generic';
-  src: url('../font/EBI-Generic/EBI-Generic.eot');
-  src: url('../font/EBI-Generic/EBI-Generic.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-Generic/EBI-Generic.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Generic/EBI-Generic.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Generic/EBI-Generic.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Generic/EBI-Generic.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-Generic/EBI-Generic.svg#EBI-Generic') format('svg'),
-  url('../font/EBI-Generic/EBI-Generic.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Generic/EBI-Generic.svg#EBI-Generic') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Generic/EBI-Generic.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -44,12 +44,12 @@
 /* Icons for commonly referenced species and orgamisms */
 @font-face {
   font-family: 'EBI-Species';
-  src: url('../font/EBI-Species/EBI-Species.eot');
-  src: url('../font/EBI-Species/EBI-Species.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-Species/EBI-Species.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Species/EBI-Species.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Species/EBI-Species.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Species/EBI-Species.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-Species/EBI-Species.svg#EBI-Species') format('svg'),
-  url('../font/EBI-Species/EBI-Species.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Species/EBI-Species.svg#EBI-Species') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Species/EBI-Species.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -57,12 +57,12 @@
 /* Icons for social media */
 @font-face {
   font-family: 'EBI-SocialMedia';
-  src: url('../font/EBI-SocialMedia/EBI-SocialMedia.eot');
-  src: url('../font/EBI-SocialMedia/EBI-SocialMedia.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-SocialMedia/EBI-SocialMedia.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-SocialMedia/EBI-SocialMedia.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-SocialMedia/EBI-SocialMedia.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-SocialMedia/EBI-SocialMedia.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-SocialMedia/EBI-SocialMedia.svg#EBI-SocialMedia') format('svg'),
-  url('../font/EBI-SocialMedia/EBI-SocialMedia.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-SocialMedia/EBI-SocialMedia.svg#EBI-SocialMedia') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-SocialMedia/EBI-SocialMedia.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -70,12 +70,12 @@
 /* Specific file formats */
 @font-face {
   font-family: 'EBI-FileFormats';
-  src: url('../font/EBI-FileFormats/EBI-FileFormats.eot');
-  src: url('../font/EBI-FileFormats/EBI-FileFormats.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-FileFormats/EBI-FileFormats.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-FileFormats/EBI-FileFormats.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-FileFormats/EBI-FileFormats.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-FileFormats/EBI-FileFormats.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-FileFormats/EBI-FileFormats.svg#EBI-Functional') format('svg'),
-  url('../font/EBI-FileFormats/EBI-FileFormats.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-FileFormats/EBI-FileFormats.svg#EBI-Functional') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-FileFormats/EBI-FileFormats.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -83,12 +83,12 @@
 /* Chemistry font */
 @font-face {
   font-family: 'EBI-Chemistry';
-  src: url('../font/EBI-Chemistry/EBI-Chemistry.eot');
-  src: url('../font/EBI-Chemistry/EBI-Chemistry.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-Chemistry/EBI-Chemistry.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Chemistry/EBI-Chemistry.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Chemistry/EBI-Chemistry.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Chemistry/EBI-Chemistry.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-Chemistry/EBI-Chemistry.svg#EBI-Chemistry') format('svg'),
-  url('../font/EBI-Chemistry/EBI-Chemistry.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Chemistry/EBI-Chemistry.svg#EBI-Chemistry') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-Chemistry/EBI-Chemistry.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -96,12 +96,12 @@
 /* Chembl font */
 @font-face {
   font-family: 'EBI-ChEMBL';
-  src: url('../font/EBI-ChEMBL/EBI-ChEMBL.eot');
-  src: url('../font/EBI-ChEMBL/EBI-ChEMBL.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-ChEMBL/EBI-ChEMBL.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL/EBI-ChEMBL.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL/EBI-ChEMBL.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL/EBI-ChEMBL.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-ChEMBL/EBI-ChEMBL.svg#EBI-Chemistry') format('svg'),
-  url('../font/EBI-ChEMBL/EBI-ChEMBL.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL/EBI-ChEMBL.svg#EBI-Chemistry') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL/EBI-ChEMBL.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -109,12 +109,12 @@
 /* Chembl font 2 */
 @font-face {
   font-family: 'EBI-ChEMBL2';
-  src: url('../font/EBI-ChEMBL2/ChEMBL_iconfont_2017.eot');
-  src: url('../font/EBI-ChEMBL2/ChEMBL_iconfont_2017.eot?#iefix') format('embedded-opentype'),
-  url('../font/EBI-ChEMBL2/ChEMBL_iconfont_2017.woff') format('woff'),
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL2/ChEMBL_iconfont_2017.eot');
+  src: url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL2/ChEMBL_iconfont_2017.eot?#iefix') format('embedded-opentype'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL2/ChEMBL_iconfont_2017.woff') format('woff'),
   local('â˜º'),
-  url('../font/EBI-ChEMBL2/ChEMBL_iconfont_2017.svg#EBI-Chemistry') format('svg'),
-  url('../font/EBI-ChEMBL2/ChEMBL_iconfont_2017.ttf') format('truetype');
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL2/ChEMBL_iconfont_2017.svg#EBI-Chemistry') format('svg'),
+  url('https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/EBI-ChEMBL2/ChEMBL_iconfont_2017.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
