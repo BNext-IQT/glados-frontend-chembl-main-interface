@@ -163,6 +163,10 @@ def do_copy_file(source_path, destination_path):
     :param source_path: source path of the file
     :param destination_path: destination path
     """
+    try:
+        os.remove(destination_path)
+    except FileNotFoundError:
+        pass
     shutil.copyfile(source_path, destination_path)
 
 
