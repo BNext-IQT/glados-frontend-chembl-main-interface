@@ -13,20 +13,20 @@ spec:
       labels:
         app: glados-frontend-chembl-main-interface
     spec:
-      initContainers:
-        - name: glados-static-files-collector
-          image: <SERVER_IMAGE_TAG>
-          imagePullPolicy: Always
-          command: [ 'sh', '-c', 'id && ls -lah /statics && python manage.py sendstaticstoserver']
-          volumeMounts:
-            - name: run-config
-              mountPath: '/etc/run_config/'
-              readOnly: true
-            - name: chembl-static-files-nfs-volume
-              mountPath: '/statics/'
-          securityContext:
-            runAsUser: <STATICS_UID>
-            runAsGroup: <STATICS_GID>
+#      initContainers:
+#        - name: glados-static-files-collector
+#          image: <SERVER_IMAGE_TAG>
+#          imagePullPolicy: Always
+#          command: [ 'sh', '-c', 'id && ls -lah /statics && python manage.py sendstaticstoserver']
+#          volumeMounts:
+#            - name: run-config
+#              mountPath: '/etc/run_config/'
+#              readOnly: true
+#            - name: chembl-static-files-nfs-volume
+#              mountPath: '/statics/'
+#          securityContext:
+#            runAsUser: <STATICS_UID>
+#            runAsGroup: <STATICS_GID>
       containers:
         - name: glados-frontend-chembl-main-interface
           image: <SERVER_IMAGE_TAG>
@@ -44,7 +44,7 @@ spec:
               mountPath: '/etc/gunicorn_config/'
               readOnly: true
             - name: chembl-static-files-nfs-volume
-              mountPath: '/statics'
+              mountPath: '/statics/'
           securityContext:
             runAsUser: <STATICS_UID>
             runAsGroup: <STATICS_GID>

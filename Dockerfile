@@ -32,4 +32,4 @@ ENTRYPOINT python manage.py runserver 8000
 
 FROM base AS production-server
 ENTRYPOINT while true; do echo 'daemon'; sleep 2; done
-ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000 -c ${GUNICORN_CONFIG_FILE_PATH}
+#ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000 -c ${GUNICORN_CONFIG_FILE_PATH}
