@@ -72,6 +72,18 @@ def get_latest_tweets(page_number=1, count=15):
 
 
 def get_latest_tweets_json(request):
+
+    if not settings.TWITTER_ENABLED:
+        default_empty_response = {
+            'tweets': [],
+            'page_meta': {
+                "limit": 0,
+                "offset": 0,
+                "total_count": 0
+            },
+        }
+        return JsonResponse(default_empty_response)
+
     try:
         count = request.GET.get('limit', 15)
         offset = request.GET.get('offset', 0)
@@ -178,6 +190,17 @@ def get_latest_blog_entries(request, pageToken):
 
 
 def get_github_details(request):
+
+    if not settings.GITHUB_DETAILS_ENABLED:
+        default_empty_response = {
+            'url': '',
+            'author': '',
+            'time_ago': '',
+            'raw_commit_date': '',
+            'message': ''
+        }
+        return JsonResponse(default_empty_response)
+
     cache_key = 'github_details'
     cache_time = 1800
     cache_response = cache.get(cache_key)
