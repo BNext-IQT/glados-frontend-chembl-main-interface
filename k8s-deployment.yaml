@@ -45,7 +45,7 @@ spec:
               readOnly: true
             - name: chembl-static-files-nfs-volume
               mountPath: '/statics/'
-              readOnly: true
+              readOnly: False
           securityContext:
             runAsUser: <STATICS_UID>
             runAsGroup: <STATICS_GID>
