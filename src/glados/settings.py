@@ -365,7 +365,7 @@ ES_PROXY_CACHE_SECONDS = run_config.get('es_proxy_cache_seconds', 604800)  # 7 d
 # ----------------------------------------------------------------------------------------------------------------------
 # Logging
 # ----------------------------------------------------------------------------------------------------------------------
-
+DJANGO_DEBUG_LEVEL = 'INFO'
 
 LOGGING = {
     'version': 1,
@@ -387,17 +387,12 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': os.getenv('DJANGO_LOG_LEVEL', DJANGO_DEBUG_LEVEL),
         },
         'glados.static_files_compiler': {
             'handlers': ['console'],
             'level': logging.DEBUG if WATCH_AND_UPDATE_STATIC_COMPILED_FILES else logging.INFO,
             'propagate': True,
-        },
-        'glados.es_connection': {
-            'handlers': ['console'],
-            'level': logging.INFO,
-            'propagate': True,
-        },
+        }
     },
 }
