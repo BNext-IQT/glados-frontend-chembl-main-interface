@@ -110,7 +110,11 @@ def copy_and_compress_file(origin_path, filename, source_base_path, destination_
     destination_dir = os.path.dirname(destination_full_path)
     os.makedirs(destination_dir, exist_ok=True)
 
-    os.remove(destination_full_lock_path)
+    try:
+        os.remove(destination_full_lock_path)
+    except FileNotFoundError:
+        pass
+
     create_lock_file(destination_full_lock_path)
     do_copy_file(source_full_path, destination_full_path)
     gz_compress_file(destination_full_path)
