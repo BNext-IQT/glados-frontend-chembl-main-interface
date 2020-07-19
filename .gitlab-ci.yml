@@ -63,8 +63,6 @@ build_docker_image:
     - docker version # verify docker cli is there. Also prints server info
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - echo building ${SERVER_IMAGE_TAG}
-    - sed -i "s~<USERNAME>~${STATIC_FILES_USERNAME}~g" ${DEPLOYMENT_AND_SERVICE_STAGING}
-    - sed -i "s~<GROUPNAME>~${STATIC_FILES_GROUPNAME}~g" ${DEPLOYMENT_AND_SERVICE_STAGING}
     - sed -i "s~<UID>~${STATIC_FILES_UID}~g" Dockerfile
     - sed -i "s~<GID>~${STATIC_FILES_GID}~g" Dockerfile
     - docker build --tag ${SERVER_IMAGE_TAG} .
