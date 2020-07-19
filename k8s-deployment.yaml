@@ -45,6 +45,7 @@ spec:
               readOnly: true
             - name: chembl-static-files-nfs-volume
               mountPath: '/statics/'
+              readOnly: true
           securityContext:
             runAsUser: <STATICS_UID>
             runAsGroup: <STATICS_GID>
@@ -57,7 +58,7 @@ spec:
             secretName: <GUNICORN_CONFIG_SECRET_NAME>
         - name: chembl-static-files-nfs-volume
           persistentVolumeClaim:
-            claimName: chembl-static-files-nfs-claim
+            claimName: chembl-static-files-nfs-claim-2
 
 ---
 apiVersion: v1
