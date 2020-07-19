@@ -228,7 +228,7 @@ glados.loadURLPaths = (request_root, app_root, static_root)->
   glados.Settings.GLADOS_BASE_URL_DOMAIN = request_root+'/'
   glados.Settings.GLADOS_BASE_URL_FULL = request_root+app_root
   glados.Settings.NO_SIDE_NAV_PLACEHOLDER = 'g'
-  glados.Settings.GLADOS_MAIN_ROUTER_BASE_URL = glados.Settings.GLADOS_BASE_URL_FULL +
+  glados.Settings.GLADOS_MAIN_ROUTER_BASE_URL = glados.Settings.GLADOS_BASE_PATH_REL +
     glados.Settings.NO_SIDE_NAV_PLACEHOLDER + '/#'
 
   glados.Settings.STATIC_IMAGES_URL = static_root + 'img/'
