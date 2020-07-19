@@ -103,6 +103,8 @@ ES_PROXY_API_BASE_URL = run_config.get('es_proxy_base_url')
 if ES_PROXY_API_BASE_URL is None:
     raise GladosSettingsError("You must provide the es proxy base url")
 
+ES_PROXY_API_BASE_URL_INTERNAL = run_config.get('es_proxy_base_url_internal', ES_PROXY_API_BASE_URL)
+
 # ----------------------------------------------------------------------------------------------------------------------
 # SERVER BASE PATH
 # ----------------------------------------------------------------------------------------------------------------------

@@ -249,7 +249,7 @@ def main_html_base_no_bar(request):
 
 
 def render_params_from_hash(request, url_hash):
-    expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
+    expansion_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/url_shortening/expand_url/{url_hash}'
 
     doc_request = requests.get(expansion_url)
     status_code = doc_request.status_code
@@ -269,7 +269,7 @@ def render_params_from_hash(request, url_hash):
 
 
 def render_params_from_hash_when_embedded(request, url_hash):
-    expansion_url = f'{settings.ES_PROXY_API_BASE_URL}/url_shortening/expand_url/{url_hash}'
+    expansion_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/url_shortening/expand_url/{url_hash}'
 
     doc_request = requests.get(expansion_url)
     status_code = doc_request.status_code
@@ -295,7 +295,7 @@ def register_usage(request):
 
         try:
 
-            url = f'{settings.ES_PROXY_API_BASE_URL}/frontend_element_usage/register_element_usage'
+            url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/frontend_element_usage/register_element_usage'
 
             payload = {
                 'view_name': request.POST.get('view_name', ''),

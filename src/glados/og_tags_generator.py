@@ -24,7 +24,7 @@ def add_attribute_to_description(description_items, item, attr_name, text_attr_n
 
 def get_og_tags_for_compound(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_molecule/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_molecule/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
@@ -81,7 +81,7 @@ def get_og_tags_for_compound(chembl_id):
 
 def get_og_tags_for_target(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_target/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_target/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
@@ -114,7 +114,7 @@ def get_og_tags_for_target(chembl_id):
 
 def get_og_tags_for_assay(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_assay/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_assay/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
@@ -145,7 +145,7 @@ def get_og_tags_for_assay(chembl_id):
 
 def get_og_tags_for_cell_line(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_cell_line/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_cell_line/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
@@ -180,7 +180,7 @@ def get_og_tags_for_cell_line(chembl_id):
 
 def get_og_tags_for_tissue(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_tissue/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_tissue/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
@@ -210,7 +210,7 @@ def get_og_tags_for_tissue(chembl_id):
 
 def get_og_tags_for_document(chembl_id):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_document/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_document/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
