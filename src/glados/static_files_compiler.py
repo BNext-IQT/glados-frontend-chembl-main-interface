@@ -12,7 +12,7 @@ import logging
 import hashlib
 import multiprocessing
 import time
-import subprocess
+import fileinput
 
 logger = logging.getLogger('glados.static_files_compiler')
 
@@ -125,34 +125,25 @@ class StaticFilesCompiler(object):
         logger.info(f'I have been asked to replace the fonts urls. I will replace {search_for} with {replace_with}')
         static_files_source = settings.STATIC_FILES_SOURCE
 
-        it_works = True
+        extensions_to_process = ['css', 'scss']
 
         for current_dir, dirs, files in os.walk(top=static_files_source):
 
             for current_file in files:
 
                 file_path = f'{current_dir}/{current_file}'
-                print('current_file: ',file_path)
+                file_extension = file_path.split('.')[-1]
 
-                run_command = f'sed -i "s/{search_for}/{replace_with}/g" {current_file}'
-                # run_command = f'ls -lah {file_path}'
+                if file_extension not in extensions_to_process:
+                    continue
 
-                logger.info(f'Going to run command: {run_command}')
-                replace_process = subprocess.run(
-                    run_command.split(' '),
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
+                print('current_file: ', file_path)
+                print('file_extension: ', file_extension)
+                print('file_extension: ', file_extension)
 
-                logger.info(f'Output: \n {replace_process.stdout}')
-                logger.info(f'Error: \n {replace_process.stderr}')
-
-                return_code = replace_process.returncode
-                logger.info(f'script return code was: {return_code}')
-
-                it_works = it_works and return_code
-                if not it_works:
-                    return False
+                with fileinput.FileInput(file_path, inplace=True, backup='.bak') as file:
+                    for line in file:
+                        print(line.replace(search_for, replace_with), end='')
 
         return True
 
