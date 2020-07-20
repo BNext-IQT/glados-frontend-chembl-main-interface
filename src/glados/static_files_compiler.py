@@ -137,11 +137,7 @@ class StaticFilesCompiler(object):
                 if file_extension not in extensions_to_process:
                     continue
 
-                print('current_file: ', file_path)
-                print('file_extension: ', file_extension)
-                print('file_extension: ', file_extension)
-
-                with fileinput.FileInput(file_path, inplace=True, backup='.bak') as file:
+                with fileinput.FileInput(file_path, inplace=True) as file:
                     for line in file:
                         print(line.replace(search_for, replace_with), end='')
 
