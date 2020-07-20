@@ -12,6 +12,7 @@ import logging
 import hashlib
 import multiprocessing
 import time
+import subprocess
 
 logger = logging.getLogger('glados.static_files_compiler')
 
@@ -98,14 +99,16 @@ class StaticFilesCompiler(object):
             coffee_compiler.start_watcher()
             scss_compiler.start_watcher()
 
+        result = compiled_all_coffee_correctly and compiled_all_scss_correctly
+
         if settings.STATIC_FONTS_URL_REPLACING is not None:
             fonts_url_replacing_config = settings.STATIC_FONTS_URL_REPLACING
             search_for = fonts_url_replacing_config['search_for']
             replace_with = fonts_url_replacing_config['replace_with']
-            cls.replace_fonts_urls(search_for, replace_with)
+            replaced_fonts_ursl_correctly = cls.replace_fonts_urls(search_for, replace_with)
+            result = result and replaced_fonts_ursl_correctly
 
-
-        return compiled_all_coffee_correctly and compiled_all_scss_correctly
+        return result
 
     # ------------------------------------------------------------------------------------------------------------------
     #  Fonts urls
@@ -116,9 +119,42 @@ class StaticFilesCompiler(object):
         Replaces in the files the fonts urls. Useful for making sure the fonts have the production url
         :param search_for: string to search for e.g. https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/
         :param replace_with: string to replace with e.g. https://www.ebi.ac.uk/chembl/k8s/static/chembl/font/
+        :return: True if it was successful, False otherwhise
         """
 
         logger.info(f'I have been asked to replace the fonts urls. I will replace {search_for} with {replace_with}')
+        static_files_source = settings.STATIC_FILES_SOURCE
+
+        it_works = True
+
+        for current_dir, dirs, files in os.walk(top=static_files_source):
+
+            for current_file in files:
+
+                file_path = f'{current_dir}/{current_file}'
+                print('current_file: ',file_path)
+
+                run_command = f'sed -i "s/{search_for}/{replace_with}/g" {current_file}'
+                # run_command = f'ls -lah {file_path}'
+
+                logger.info(f'Going to run command: {run_command}')
+                replace_process = subprocess.run(
+                    run_command.split(' '),
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+
+                logger.info(f'Output: \n {replace_process.stdout}')
+                logger.info(f'Error: \n {replace_process.stderr}')
+
+                return_code = replace_process.returncode
+                logger.info(f'script return code was: {return_code}')
+
+                it_works = it_works and return_code
+                if not it_works:
+                    return False
+
+        return True
 
     # ------------------------------------------------------------------------------------------------------------------
     #  Constructor
