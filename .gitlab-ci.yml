@@ -52,7 +52,7 @@ stages:
 # ----------------------------------------------------------------------------------------------------------------------
 build_docker_image_for_staging:
   image:
-    name: docker:latest
+    name: docker/compose:latest
     entrypoint: ["/bin/sh", "-c"]
   stage: build_for_staging
   only:
@@ -67,7 +67,7 @@ build_docker_image_for_staging:
     - echo building ${SERVER_IMAGE_TAG}
     - sed -i "s~<UID>~${STATIC_FILES_UID}~g" Dockerfile
     - sed -i "s~<GID>~${STATIC_FILES_GID}~g" Dockerfile
-    - docker-compose build staging-server
+    - docker-compose build glados-staging
     - docker push ${SERVER_IMAGE_TAG}
 
 ## ----------------------------------------------------------------------------------------------------------------------
