@@ -7,7 +7,7 @@ variables:
   DOCKER_DRIVER: overlay
   CONFIGS_FOLDER: run_config
   LATEST_BUILD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/${SERVER_APPLICATION}:latest_build
-  LATEST_PROD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/${SERVER_APPLICATION}:latest_prod
+  LATEST_PROD_IMAGE_TAG: $CI_REGISTRY/$REGISTRY_USER/${SERVER_APPLICATION}:${CI_COMMIT_SHORT_SHA}_latest_prod
   # Config unit tests
   CONFIG_UNIT_TESTS_FILE_PATH: ${CONFIGS_FOLDER}/unit_tests.yml
   # Config staging
@@ -69,6 +69,10 @@ build_docker_image_for_staging:
     - sed -i "s~<GID>~${STATIC_FILES_GID}~g" Dockerfile-Staging
     - docker build --tag ${SERVER_IMAGE_TAG} -f Dockerfile-Staging .
     - docker push ${SERVER_IMAGE_TAG}
+    - sed -i "s~<UID>~${STATIC_FILES_UID}~g" Dockerfile-Prod
+    - sed -i "s~<GID>~${STATIC_FILES_GID}~g" Dockerfile-Prod
+    - docker build --tag ${LATEST_PROD_IMAGE_TAG} -f Dockerfile-Prod .
+    - docker push ${LATEST_PROD_IMAGE_TAG}
 
 ## ----------------------------------------------------------------------------------------------------------------------
 ## QA
