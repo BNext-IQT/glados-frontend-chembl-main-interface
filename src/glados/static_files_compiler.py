@@ -97,7 +97,28 @@ class StaticFilesCompiler(object):
             logger.setLevel(logging.DEBUG)
             coffee_compiler.start_watcher()
             scss_compiler.start_watcher()
+
+        if settings.STATIC_FONTS_URL_REPLACING is not None:
+            fonts_url_replacing_config = settings.STATIC_FONTS_URL_REPLACING
+            search_for = fonts_url_replacing_config['search_for']
+            replace_with = fonts_url_replacing_config['replace_with']
+            cls.replace_fonts_urls(search_for, replace_with)
+
+
         return compiled_all_coffee_correctly and compiled_all_scss_correctly
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #  Fonts urls
+    # ------------------------------------------------------------------------------------------------------------------
+    @classmethod
+    def replace_fonts_urls(cls, search_for, replace_with):
+        """
+        Replaces in the files the fonts urls. Useful for making sure the fonts have the production url
+        :param search_for: string to search for e.g. https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/
+        :param replace_with: string to replace with e.g. https://www.ebi.ac.uk/chembl/k8s/static/chembl/font/
+        """
+
+        logger.info(f'I have been asked to replace the fonts urls. I will replace {search_for} with {replace_with}')
 
     # ------------------------------------------------------------------------------------------------------------------
     #  Constructor

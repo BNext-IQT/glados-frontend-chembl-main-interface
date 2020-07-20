@@ -312,6 +312,8 @@ STATICFILES_FINDERS = (
 WATCH_AND_UPDATE_STATIC_COMPILED_FILES = CUSTOM_STATIC_FILES_CONFIG.get('watch_and_update_static_compiled_files', True)
 print('WATCH_AND_UPDATE_STATIC_COMPILED_FILES: ', WATCH_AND_UPDATE_STATIC_COMPILED_FILES)
 
+STATIC_FONTS_URL_REPLACING = STATIC_URL = CUSTOM_STATIC_FILES_CONFIG.get('fonts_url_replacing')
+
 # ----------------------------------------------------------------------------------------------------------------------
 # File Compression (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
