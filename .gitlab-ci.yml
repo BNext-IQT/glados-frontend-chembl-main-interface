@@ -32,7 +32,7 @@ services:
   - docker:dind
 
 stages:
-  - build
+  - build_for_staging
   - prepare_config_tests
   - test_and_qa
   - prepare_config_staging
@@ -50,11 +50,13 @@ stages:
 # ----------------------------------------------------------------------------------------------------------------------
 # build
 # ----------------------------------------------------------------------------------------------------------------------
-build_docker_image:
+build_docker_image_for_staging:
   image:
     name: docker:latest
     entrypoint: ["/bin/sh", "-c"]
-  stage: build
+  stage: build_for_staging
+  only:
+    - staging
   variables:
     DOCKER_HOST: tcp://docker:2375
   script:
@@ -73,6 +75,8 @@ build_docker_image:
 ## ----------------------------------------------------------------------------------------------------------------------
 prepare_config_tests:
   stage: prepare_config_tests
+  only:
+    - staging
   image:
     name: alpine/git
     entrypoint: ["/bin/sh", "-c"]
@@ -86,6 +90,8 @@ prepare_config_tests:
 
 pylint:
   stage: test_and_qa
+  only:
+    - staging
   image:
     name: $SERVER_IMAGE_TAG
     entrypoint: [""]
@@ -101,6 +107,8 @@ pylint:
 
 unit_tests:
   stage: test_and_qa
+  only:
+    - staging
   image:
     name: $SERVER_IMAGE_TAG
     entrypoint: [""]
@@ -110,6 +118,8 @@ unit_tests:
 
 javascript_tests:
   stage: test_and_qa
+  only:
+    - staging
   image:
     name: $SERVER_IMAGE_TAG
     entrypoint: [""]
