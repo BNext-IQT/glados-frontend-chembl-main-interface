@@ -15,12 +15,14 @@ services:
       - CONFIG_FILE_PATH=/app/config.yml
     ports:
     - "8000:8000"
-  glados-prod:
+  glados-staging:
     build:
       context: .
-      target: production-server
+      target: staging-server
       args:
         <<: *build_args
     image: "${SERVER_IMAGE_TAG:-chembl/glados:prod}"
+    environment:
+      - BUILD_CONFIG_FILE_PATH=/app/configurations/build_config.yml
     ports:
     - "8000:8000"
