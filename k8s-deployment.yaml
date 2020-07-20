@@ -50,6 +50,19 @@ spec:
           securityContext:
             runAsUser: <STATICS_UID>
             runAsGroup: <STATICS_GID>
+          env:
+            - name: HTTP_PROXY
+              value: "<HTTP_PROXY>"
+            - name: http_proxy
+              value: "<HTTP_PROXY>"
+            - name: HTTPS_PROXY
+              value: "<HTTPS_PROXY>"
+            - name: https_proxy
+              value: "<HTTPS_PROXY>"
+            - name: NO_PROXY
+              value: "<NO_PROXY>"
+            - name: no_proxy
+              value: "<NO_PROXY>"
       volumes:
         - name: run-config
           secret:
