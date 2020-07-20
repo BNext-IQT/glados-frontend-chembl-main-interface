@@ -67,7 +67,7 @@ build_docker_image_for_staging:
     - echo building ${SERVER_IMAGE_TAG}
     - sed -i "s~<UID>~${STATIC_FILES_UID}~g" Dockerfile
     - sed -i "s~<GID>~${STATIC_FILES_GID}~g" Dockerfile
-    - docker build --tag ${SERVER_IMAGE_TAG} .
+    - docker build --tag ${SERVER_IMAGE_TAG} . --build-arg BUILD_CONFIG_FILE_PATH='/app/configurations/build_config.yml'
     - docker push ${SERVER_IMAGE_TAG}
 
 ## ----------------------------------------------------------------------------------------------------------------------
