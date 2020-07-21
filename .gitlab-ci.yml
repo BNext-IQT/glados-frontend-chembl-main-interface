@@ -255,9 +255,14 @@ deploy_to_prod_hx:
     - cat ${CONFIG_GUNICORN_PROD_HX_FILE_PATH}
     - sed -i "s~<NAMESPACE>~${CHEMBL_NS_PROD}~" k8s-deployment.yaml
     - sed -i "s~<NUM_REPLICAS>~${NUM_REPLICAS_PROD_HX}~" k8s-deployment.yaml
+    - sed -i "s~<STATICS_UID>~${STATIC_FILES_UID}~g" k8s-deployment.yaml
+    - sed -i "s~<STATICS_GID>~${STATIC_FILES_GID}~g" k8s-deployment.yaml
+    - sed -i "s~<HTTP_PROXY>~${HTTP_PROXY_HX}~g" k8s-deployment.yaml
+    - sed -i "s~<HTTPS_PROXY>~${HTTPS_PROXY_HX}~g" k8s-deployment.yaml
+    - sed -i "s~<NO_PROXY>~${NO_PROXY_HH_DEFAULT}~g" k8s-deployment.yaml
     - sed -i "s~<CPU_LIMIT>~${CPU_LIMIT_PROD_HX}~" k8s-deployment.yaml
     - sed -i "s~<CPU_REQUESTED>~${CPU_REQUESTED_PROD_HX}~" k8s-deployment.yaml
-    - sed -i "s~<SERVER_IMAGE_TAG>~${SERVER_IMAGE_TAG}~" k8s-deployment.yaml
+    - sed -i "s~<SERVER_IMAGE_TAG>~${LATEST_PROD_IMAGE_TAG}~" k8s-deployment.yaml
     - sed -i "s~<RUN_CONFIG_SECRET_NAME>~${RUN_CONFIG_SECRET_NAME_PROD_HX}~" k8s-deployment.yaml
     - sed -i "s~<GUNICORN_CONFIG_SECRET_NAME>~${GUNICORN_CONFIG_SECRET_NAME_PROD_HX}~" k8s-deployment.yaml
     - cat k8s-deployment.yaml
