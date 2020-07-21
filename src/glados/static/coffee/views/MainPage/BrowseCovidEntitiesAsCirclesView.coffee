@@ -23,7 +23,7 @@ glados.useNameSpace 'glados.views.MainPage',
       fetchDatabasePromise = $.getJSON(infoURL)
 
       fetchDatabasePromise.fail ->
-        console.log 'Fetching entities info from web services failed :('
+        console.log 'Fetching entities info from web services failed! :('
 
       fetchDatabasePromise.done (response) ->
         thisView.renderCircles(response)

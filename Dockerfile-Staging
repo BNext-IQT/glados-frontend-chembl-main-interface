@@ -16,7 +16,8 @@ RUN apt-get install -y \
 WORKDIR /app
 COPY requirements.txt .
 
-RUN useradd -m glados -u 2892
+RUN groupadd -g <GID> glados
+RUN useradd -m glados -u <UID> -g <GID>
 RUN chown -R glados:glados /app
 USER glados
 ENV PATH="/home/glados/.local/bin:${PATH}"
@@ -24,10 +25,15 @@ ENV PATH="/home/glados/.local/bin:${PATH}"
 RUN pip install -U "setuptools<46"
 RUN pip install --user -r requirements.txt
 COPY . .
+RUN CONFIG_FILE_PATH='/app/configurations/build_config.yml' python manage.py collectstatic --no-input
 
 FROM base AS development-server
 ENTRYPOINT python manage.py runserver 8000
 
+FROM base AS staging-server
+#ENTRYPOINT while true; do echo 'daemon'; sleep 2; done
+ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000 -c ${GUNICORN_CONFIG_FILE_PATH}
+
 FROM base AS production-server
-ENTRYPOINT python manage.py collectstatic --no-input; python manage.py runserver 8000
-#ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000 -c ${GUNICORN_CONFIG_FILE_PATH}
+#ENTRYPOINT while true; do echo 'daemon'; sleep 2; done
+ENTRYPOINT PYTHONPATH=/app/src:$PYTHONPATH gunicorn src.glados.wsgi:APP -b 0.0.0.0:8000 -c ${GUNICORN_CONFIG_FILE_PATH}

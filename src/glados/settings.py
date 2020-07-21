@@ -45,7 +45,7 @@ custom_config_file_path = os.getenv('CONFIG_FILE_PATH')
 if custom_config_file_path is not None:
     CONFIG_FILE_PATH = custom_config_file_path
 else:
-    CONFIG_FILE_PATH = os.getenv("HOME") + '/.chembl-glados/config.yml'
+    CONFIG_FILE_PATH = 'config.yml'
 print('CONFIG_FILE_PATH: ', CONFIG_FILE_PATH)
 run_config = yaml.load(open(CONFIG_FILE_PATH, 'r'), Loader=yaml.FullLoader)
 
@@ -58,12 +58,12 @@ if RUN_ENV not in [RunEnvs.DEV, RunEnvs.TRAVIS, RunEnvs.TEST, RunEnvs.PROD]:
     raise GladosSettingsError("Run environment {} is not supported.".format(RUN_ENV))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = RUN_ENV in [RunEnvs.DEV, RunEnvs.TRAVIS]
+DEBUG = run_config.get('debug_mode', False)
 print('DEBUG: ', DEBUG)
 
 # Build paths inside the project like this: os.path.join(GLADOS_ROOT, ...)
 GLADOS_ROOT = os.path.dirname(os.path.abspath(glados.__file__))
-VUE_ROOT = os.path.join(GLADOS_ROOT, 'v')
+print('GLADOS_ROOT: ', )
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -102,6 +102,8 @@ if DOWNLOADS_RELEASE_NAME is None:
 ES_PROXY_API_BASE_URL = run_config.get('es_proxy_base_url')
 if ES_PROXY_API_BASE_URL is None:
     raise GladosSettingsError("You must provide the es proxy base url")
+
+ES_PROXY_API_BASE_URL_INTERNAL = run_config.get('es_proxy_base_url_internal', ES_PROXY_API_BASE_URL)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # SERVER BASE PATH
@@ -144,6 +146,11 @@ if TWITTER_ENABLED:
     TWITTER_ACCESS_TOKEN_SECRET = twitter_secrets.get('twitter_access_token_secret', '')
     TWITTER_CONSUMER_KEY = twitter_secrets.get('twitter_access_consumer_key', '')
     TWITTER_CONSUMER_SECRET = twitter_secrets.get('twitter_access_consumer_secret', '')
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Github Details
+# ----------------------------------------------------------------------------------------------------------------------
+GITHUB_DETAILS_ENABLED = run_config.get('enable_github_details', False)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Blogger
@@ -276,29 +283,43 @@ LANGUAGES = [
 
 USE_X_FORWARDED_HOST = True
 
-STATIC_URL = f'{SERVER_BASE_PATH}/static/'
+CUSTOM_STATIC_FILES_CONFIG = run_config.get('static_files', {})
 
+STATIC_URL = CUSTOM_STATIC_FILES_CONFIG.get('statics_base_url', f'{SERVER_BASE_PATH}/static/')
+print('STATIC_URL: ', STATIC_URL)
 
-STATICFILES_DIRS = (
-    os.path.join(GLADOS_ROOT, 'static/'),
-)
+STATIC_FILES_SOURCE = CUSTOM_STATIC_FILES_CONFIG.get('static_files_source')
+print('STATIC_FILES_SOURCE: ', STATIC_FILES_SOURCE)
 
-STATIC_ROOT = run_config.get('static_root', os.path.join(GLADOS_ROOT, 'static_root'))
+if STATIC_FILES_SOURCE is not None:
+    STATICFILES_DIRS = (STATIC_FILES_SOURCE,)
+else:
+    STATICFILES_DIRS = (
+        os.path.join(GLADOS_ROOT, 'static/'),
+    )
+
+STATIC_ROOT = CUSTOM_STATIC_FILES_CONFIG.get('static_files_destination', os.path.join(GLADOS_ROOT, 'static_root'))
+print('STATIC FILES DESTINATION (STATIC_ROOT)', STATIC_ROOT)
+
+STATIC_FILES_SERVER_DESTINATION = CUSTOM_STATIC_FILES_CONFIG.get('static_files_server_destination',
+                                                                 os.path.join(GLADOS_ROOT, 'static_root_final'))
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'compressor.finders.CompressorFinder',
 )
 
-WATCH_AND_UPDATE_STATIC_COMPILED_FILES = RUN_ENV in [RunEnvs.DEV, RunEnvs.TRAVIS]
+WATCH_AND_UPDATE_STATIC_COMPILED_FILES = CUSTOM_STATIC_FILES_CONFIG.get('watch_and_update_static_compiled_files', True)
 print('WATCH_AND_UPDATE_STATIC_COMPILED_FILES: ', WATCH_AND_UPDATE_STATIC_COMPILED_FILES)
+
+STATIC_FONTS_URL_REPLACING = CUSTOM_STATIC_FILES_CONFIG.get('fonts_url_replacing')
 
 # ----------------------------------------------------------------------------------------------------------------------
 # File Compression (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 # ----------------------------------------------------------------------------------------------------------------------
 
-COMPRESS_ENABLED = RUN_ENV in [RunEnvs.TEST, RunEnvs.PROD]
+COMPRESS_ENABLED = CUSTOM_STATIC_FILES_CONFIG.get('enable_statics_compression', False)
 print('COMPRESS_ENABLED: ', COMPRESS_ENABLED)
 
 if COMPRESS_ENABLED:
@@ -353,7 +374,8 @@ ES_PROXY_CACHE_SECONDS = run_config.get('es_proxy_cache_seconds', 604800)  # 7 d
 # ----------------------------------------------------------------------------------------------------------------------
 # Logging
 # ----------------------------------------------------------------------------------------------------------------------
-
+CUSTOM_LOGGING_CONFIG = run_config.get('logging', {})
+DJANGO_DEBUG_LEVEL = CUSTOM_LOGGING_CONFIG.get('django_level', 'INFO')
 
 LOGGING = {
     'version': 1,
@@ -375,17 +397,12 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': os.getenv('DJANGO_LOG_LEVEL', DJANGO_DEBUG_LEVEL),
         },
         'glados.static_files_compiler': {
             'handlers': ['console'],
             'level': logging.DEBUG if WATCH_AND_UPDATE_STATIC_COMPILED_FILES else logging.INFO,
             'propagate': True,
-        },
-        'glados.es_connection': {
-            'handlers': ['console'],
-            'level': logging.INFO,
-            'propagate': True,
-        },
+        }
     },
 }

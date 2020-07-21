@@ -1,0 +1,31 @@
+run_env: PROD #DEV, TRAVIS, TEST or PROD
+debug_mode: False
+elasticsearch:
+  public_host: 'some_host'
+chembl_api:
+  ws_url: 'some_url'
+  beaker_url: 'some_url'
+current_release:
+  full_name: 'some_name'
+  full_doi: 'some_doi'
+  downloads_date: 'some_date'
+  # The basename of the files in the ftp
+  downloads_release_name: 'some_name'
+  elasticsearch_chembl_index_prefix: 'some_prefix_'
+server_secret_key: 'server_secret_key'
+enable_twitter: True
+twitter_secrets:
+  twitter_access_token: 'twitter_access_token'
+  twitter_access_token_secret: 'twitter_access_token_secret'
+  twitter_access_consumer_key: 'twitter_access_consumer_key'
+  twitter_access_consumer_secret: 'twitter_access_consumer_secret'
+enable_blogger: True
+blogger_secrets:
+  blogger_key: 'blogger_key'
+es_proxy_base_url: 'some_url'
+#server_base_path: 'chembl/interface_api/test_interface_k8s'
+static_files:
+  watch_and_update_static_compiled_files: False
+  static_files_source: '/app/src/glados/static'
+  static_files_destination: '/app/compiled_statics'
+  enable_statics_compression: True

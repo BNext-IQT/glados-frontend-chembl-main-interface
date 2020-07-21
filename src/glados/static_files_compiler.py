@@ -10,6 +10,9 @@ from watchdog.events import FileSystemEventHandler
 import math
 import logging
 import hashlib
+import multiprocessing
+import time
+import fileinput
 
 logger = logging.getLogger('glados.static_files_compiler')
 
@@ -95,7 +98,51 @@ class StaticFilesCompiler(object):
             logger.setLevel(logging.DEBUG)
             coffee_compiler.start_watcher()
             scss_compiler.start_watcher()
-        return compiled_all_coffee_correctly and compiled_all_scss_correctly
+
+        result = compiled_all_coffee_correctly and compiled_all_scss_correctly
+
+        if settings.STATIC_FONTS_URL_REPLACING is not None:
+            time.sleep(5)
+            fonts_url_replacing_config = settings.STATIC_FONTS_URL_REPLACING
+            search_for = fonts_url_replacing_config['search_for']
+            replace_with = fonts_url_replacing_config['replace_with']
+            replaced_fonts_ursl_correctly = cls.replace_fonts_urls(search_for, replace_with)
+            result = result and replaced_fonts_ursl_correctly
+
+        return result
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #  Fonts urls
+    # ------------------------------------------------------------------------------------------------------------------
+    @classmethod
+    def replace_fonts_urls(cls, search_for, replace_with):
+        """
+        Replaces in the files the fonts urls. Useful for making sure the fonts have the production url
+        :param search_for: string to search for e.g. https://wwwdev.ebi.ac.uk/chembl/k8s/static/chembl/font/
+        :param replace_with: string to replace with e.g. https://www.ebi.ac.uk/chembl/k8s/static/chembl/font/
+        :return: True if it was successful, False otherwhise
+        """
+
+        logger.info(f'I have been asked to replace the fonts urls. I will replace {search_for} with {replace_with}')
+        static_files_source = settings.STATIC_FILES_SOURCE
+
+        extensions_to_process = ['css', 'scss']
+
+        for current_dir, dirs, files in os.walk(top=static_files_source):
+
+            for current_file in files:
+
+                file_path = f'{current_dir}/{current_file}'
+                file_extension = file_path.split('.')[-1]
+
+                if file_extension not in extensions_to_process:
+                    continue
+
+                with fileinput.FileInput(file_path, inplace=True) as file:
+                    for line in file:
+                        print(line.replace(search_for, replace_with), end='')
+
+        return True
 
     # ------------------------------------------------------------------------------------------------------------------
     #  Constructor
@@ -123,7 +170,7 @@ class StaticFilesCompiler(object):
             compiled_dir_path = self.get_compiled_path(os.path.dirname(event.src_path))
             compiled_out_path = self.get_compiled_out_path(os.path.basename(event.src_path), compiled_dir_path)
             if compiled_out_path is not None:
-                logger.debug("COMPILING: {0}\nINTO: {1}\n...".format(event.src_path, compiled_out_path))
+                logger.info("COMPILING: {0}\nINTO: {1}\n...".format(event.src_path, compiled_out_path))
                 compilation_stats = self.compile_and_save(event.src_path, compiled_out_path)
                 if compilation_stats[1] == 1:
                     logger.error('THIS FILE SHOULD NOT BE PRECOMPILED!')
@@ -134,7 +181,7 @@ class StaticFilesCompiler(object):
         observer.daemon = True
         observer.schedule(file_event_handler, self.src_path, recursive=True)
         observer.start()
-        logger.debug('File watcher started for {} files at {}'.format(self.ext_to_compile, self.src_path))
+        logger.info('File watcher started for {} files at {}'.format(self.ext_to_compile, self.src_path))
 
     @staticmethod
     def should_skip_compile(md5_file_in, file_out):
@@ -148,15 +195,23 @@ class StaticFilesCompiler(object):
     def compile_and_save(self, file_in, file_out):
         md5_file_in = md5(file_in)
         if self.should_skip_compile(md5_file_in, file_out):
-            logger.debug('SKIPPING COMPILATION: {0} compiled file already exists!'.format(file_in))
+            logger.info(f'SKIPPING COMPILATION: {file_in} compiled file already exists at {file_out}')
             return 0, 1
         try:
+            start_time = time.time()
             compile_result = self.compiler_function(file_in)
+            end_time_compile_result = time.time()
+            time_taken_compile_result = end_time_compile_result - start_time
+            logger.info(f'time_taken_compile_result:  {time_taken_compile_result}')
+
             with open(file_out, 'w') as file_out_i:
                 file_out_i.write(compile_result)
             with open(file_out + '.src_md5', 'w') as file_out_i:
                 file_out_i.write(md5_file_in)
-            logger.debug('COMPILED: {0}'.format(file_in))
+
+            end_time = time.time()
+            time_taken = end_time - start_time
+            logger.info(f'COMPILED: {file_in} to {file_out} took {time_taken}')
             return 1, 0
         except Exception as e:
             try:
@@ -192,18 +247,20 @@ class StaticFilesCompiler(object):
         return compiled_out_path
 
     def compile_all(self):
-        import time
+
         t_ini = time.time()
+        logger.info(f'Starting compilation process with {multiprocessing.cpu_count()} CPUs available')
+
         tpe_tasks = []
         num_files_to_compile = 0
-        with futures.ThreadPoolExecutor(max_workers=5) as tpe:
+        with futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as tpe:
             logger.info("COMPILING: {0} files.".format(self.ext_to_compile))
             for cur_dir, dirs, files in os.walk(top=self.src_path):
                 compiled_dir_path = self.get_compiled_path(cur_dir)
                 mkdirs_called = False
                 for file_i in files:
                     if self.exclude_regex is not None and self.exclude_regex.match(file_i):
-                        logger.debug('EXCLUDED: {0}/{1}'.format(cur_dir, file_i))
+                        logger.info('EXCLUDED: {0}/{1}'.format(cur_dir, file_i))
                         continue
                     # only create dirs and files if the compilation is successful and the files are not excluded
                     if not mkdirs_called:
@@ -213,7 +270,7 @@ class StaticFilesCompiler(object):
                     compiled_out_path = self.get_compiled_out_path(file_i, compiled_dir_path)
                     if compiled_out_path is not None:
                         num_files_to_compile += 1
-                        logger.debug('SUBMITTING: {0}/{1}'.format(cur_dir, file_i))
+                        logger.info('SUBMITTING: {0}/{1}'.format(cur_dir, file_i))
                         tpe_task = tpe.submit(self.compile_and_save, file_src_i, compiled_out_path)
                         tpe_tasks.append(tpe_task)
             tpe.shutdown(wait=True)
@@ -225,7 +282,6 @@ class StaticFilesCompiler(object):
             compiled += task_stats[0]
             precompiled_found += task_stats[1]
         logger.info(
-            "COMPILATION RESULT: {0} precompiled file(s) found and {1} file(s) compiled in {2} second(s)."
-            .format(precompiled_found, compiled, math.floor(time.time()-t_ini+1))
+            f'COMPILATION RESULT: {precompiled_found} precompiled file(s) found and {compiled} file(s) compiled in {math.floor(time.time()-t_ini+1)} second(s).'
         )
         return (precompiled_found + compiled) == num_files_to_compile

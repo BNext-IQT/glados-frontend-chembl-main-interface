@@ -13,22 +13,56 @@ spec:
       labels:
         app: glados-frontend-chembl-main-interface
     spec:
+      initContainers:
+        - name: glados-static-files-collector
+          image: <SERVER_IMAGE_TAG>
+          imagePullPolicy: Always
+          command: [ 'sh', '-c', 'id && ls -lah /statics && python manage.py sendstaticstoserver']
+          volumeMounts:
+            - name: run-config
+              mountPath: '/etc/run_config/'
+              readOnly: true
+            - name: chembl-static-files-nfs-volume
+              mountPath: '/statics/'
+              readOnly: False
+          securityContext:
+            runAsUser: <STATICS_UID>
+            runAsGroup: <STATICS_GID>
       containers:
-      - name: glados-frontend-chembl-main-interface
-        image: <SERVER_IMAGE_TAG>
-        imagePullPolicy: Always
-        resources:
-          limits:
-            cpu: <CPU_LIMIT>
-          requests:
-            cpu: <CPU_REQUESTED>
-        volumeMounts:
-        - name: run-config
-          mountPath: '/etc/run_config/'
-          readOnly: true
-        - name: gunicorn-config
-          mountPath: '/etc/gunicorn_config/'
-          readOnly: true
+        - name: glados-frontend-chembl-main-interface
+          image: <SERVER_IMAGE_TAG>
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: <CPU_LIMIT>
+            requests:
+              cpu: <CPU_REQUESTED>
+          volumeMounts:
+            - name: run-config
+              mountPath: '/etc/run_config/'
+              readOnly: true
+            - name: gunicorn-config
+              mountPath: '/etc/gunicorn_config/'
+              readOnly: true
+            - name: chembl-static-files-nfs-volume
+              mountPath: '/statics/'
+              readOnly: False
+          securityContext:
+            runAsUser: <STATICS_UID>
+            runAsGroup: <STATICS_GID>
+          env:
+            - name: HTTP_PROXY
+              value: "<HTTP_PROXY>"
+            - name: http_proxy
+              value: "<HTTP_PROXY>"
+            - name: HTTPS_PROXY
+              value: "<HTTPS_PROXY>"
+            - name: https_proxy
+              value: "<HTTPS_PROXY>"
+            - name: NO_PROXY
+              value: "<NO_PROXY>"
+            - name: no_proxy
+              value: "<NO_PROXY>"
       volumes:
         - name: run-config
           secret:
@@ -36,6 +70,9 @@ spec:
         - name: gunicorn-config
           secret:
             secretName: <GUNICORN_CONFIG_SECRET_NAME>
+        - name: chembl-static-files-nfs-volume
+          persistentVolumeClaim:
+            claimName: chembl-static-files-nfs-claim-2
 
 ---
 apiVersion: v1

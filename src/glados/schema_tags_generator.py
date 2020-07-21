@@ -146,7 +146,7 @@ def get_main_page_schema(request):
 # ------------------------------------------------------------------------------------------------------------------
 def get_schema_obj_for_compound(chembl_id, request):
 
-    compound_url = f'{settings.ES_PROXY_API_BASE_URL}/es_data/get_es_document/chembl_molecule/{chembl_id}'
+    compound_url = f'{settings.ES_PROXY_API_BASE_URL_INTERNAL}/es_data/get_es_document/chembl_molecule/{chembl_id}'
 
     doc_request = requests.get(compound_url)
     status_code = doc_request.status_code
