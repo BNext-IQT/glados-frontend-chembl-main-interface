@@ -176,7 +176,7 @@ deploy_to_staging:
   - sed -i "s~<STATICS_GID>~${STATIC_FILES_GID}~g" k8s-deployment.yaml
   - sed -i "s~<HTTP_PROXY>~${HTTP_PROXY_HX}~g" k8s-deployment.yaml
   - sed -i "s~<HTTPS_PROXY>~${HTTPS_PROXY_HX}~g" k8s-deployment.yaml
-  - sed -i "s~<NO_PROXY>~${NO_PROXY_HH_DEFAULT}~g" k8s-deployment.yaml
+  - sed -i "s~<NO_PROXY>~${NO_PROXY_HX_DEFAULT}~g" k8s-deployment.yaml
   - sed -i "s~<CPU_LIMIT>~${CPU_LIMIT_STAGING}~g" k8s-deployment.yaml
   - sed -i "s~<CPU_REQUESTED>~${CPU_REQUESTED_STAGING}~g" k8s-deployment.yaml
   - sed -i "s~<SERVER_IMAGE_TAG>~${SERVER_IMAGE_TAG}~g" k8s-deployment.yaml
@@ -249,8 +249,8 @@ deploy_to_prod_hx:
     - kubectl config use-context ${CHEMBL_NS_PROD}
     - echo ${CHEMBL_NS_PROD} ${KUBE_URL_HX} ${KUBE_CLUS_NAME_HX} ${KUBE_USER_HX}
     - kubectl get pods -n ${CHEMBL_NS_PROD}
-    - kubectl create secret generic ${RUN_CONFIG_SECRET_NAME_PROD_HX} --from-file=RUN_CONFIG.yml=${CONFIG_PROD_HX_FILE_PATH} -o yaml -n ${CHEMBL_NS_PROD} --dry-run=client | kubectl create -f -
-    - kubectl create secret generic ${GUNICORN_CONFIG_SECRET_NAME_PROD_HX} --from-file=GUNICORN_CONFIG.py=${CONFIG_GUNICORN_PROD_HX_FILE_PATH} -o yaml -n ${CHEMBL_NS_PROD} --dry-run=client | kubectl create -f -
+    - kubectl create secret generic ${RUN_CONFIG_SECRET_NAME_PROD_HX} --from-file=RUN_CONFIG.yml=${CONFIG_PROD_HX_FILE_PATH} -o yaml -n ${CHEMBL_NS_PROD} --dry-run=client | kubectl replace -f -
+    - kubectl create secret generic ${GUNICORN_CONFIG_SECRET_NAME_PROD_HX} --from-file=GUNICORN_CONFIG.py=${CONFIG_GUNICORN_PROD_HX_FILE_PATH} -o yaml -n ${CHEMBL_NS_PROD} --dry-run=client | replace replace -f -
     - cat ${CONFIG_PROD_HX_FILE_PATH}
     - cat ${CONFIG_GUNICORN_PROD_HX_FILE_PATH}
     - sed -i "s~<NAMESPACE>~${CHEMBL_NS_PROD}~" k8s-deployment.yaml
@@ -259,7 +259,7 @@ deploy_to_prod_hx:
     - sed -i "s~<STATICS_GID>~${STATIC_FILES_GID}~g" k8s-deployment.yaml
     - sed -i "s~<HTTP_PROXY>~${HTTP_PROXY_HX}~g" k8s-deployment.yaml
     - sed -i "s~<HTTPS_PROXY>~${HTTPS_PROXY_HX}~g" k8s-deployment.yaml
-    - sed -i "s~<NO_PROXY>~${NO_PROXY_HH_DEFAULT}~g" k8s-deployment.yaml
+    - sed -i "s~<NO_PROXY>~${NO_PROXY_HX_DEFAULT}~g" k8s-deployment.yaml
     - sed -i "s~<CPU_LIMIT>~${CPU_LIMIT_PROD_HX}~" k8s-deployment.yaml
     - sed -i "s~<CPU_REQUESTED>~${CPU_REQUESTED_PROD_HX}~" k8s-deployment.yaml
     - sed -i "s~<SERVER_IMAGE_TAG>~${LATEST_PROD_IMAGE_TAG}~" k8s-deployment.yaml
@@ -333,9 +333,14 @@ deploy_to_prod_hh:
     - cat ${CONFIG_GUNICORN_PROD_HH_FILE_PATH}
     - sed -i "s~<NAMESPACE>~${CHEMBL_NS_PROD}~" k8s-deployment.yaml
     - sed -i "s~<NUM_REPLICAS>~${NUM_REPLICAS_PROD_HH}~" k8s-deployment.yaml
-    - sed -i "s~<SERVER_IMAGE_TAG>~${SERVER_IMAGE_TAG}~" k8s-deployment.yaml
+    - sed -i "s~<STATICS_UID>~${STATIC_FILES_UID}~g" k8s-deployment.yaml
+    - sed -i "s~<STATICS_GID>~${STATIC_FILES_GID}~g" k8s-deployment.yaml
+    - sed -i "s~<HTTP_PROXY>~${HTTP_PROXY_HH}~g" k8s-deployment.yaml
+    - sed -i "s~<HTTPS_PROXY>~${HTTPS_PROXY_HH}~g" k8s-deployment.yaml
+    - sed -i "s~<NO_PROXY>~${NO_PROXY_HH_DEFAULT}~g" k8s-deployment.yaml
     - sed -i "s~<CPU_LIMIT>~${CPU_LIMIT_PROD_HH}~" k8s-deployment.yaml
     - sed -i "s~<CPU_REQUESTED>~${CPU_REQUESTED_PROD_HH}~" k8s-deployment.yaml
+    - sed -i "s~<SERVER_IMAGE_TAG>~${SERVER_IMAGE_TAG}~" k8s-deployment.yaml
     - sed -i "s~<RUN_CONFIG_SECRET_NAME>~${RUN_CONFIG_SECRET_NAME_PROD_HH}~" k8s-deployment.yaml
     - sed -i "s~<GUNICORN_CONFIG_SECRET_NAME>~${GUNICORN_CONFIG_SECRET_NAME_PROD_HH}~" k8s-deployment.yaml
     - cat k8s-deployment.yaml
