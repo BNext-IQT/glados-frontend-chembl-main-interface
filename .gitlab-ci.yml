@@ -340,7 +340,7 @@ deploy_to_prod_hh:
     - sed -i "s~<NO_PROXY>~${NO_PROXY_HH_DEFAULT}~g" k8s-deployment.yaml
     - sed -i "s~<CPU_LIMIT>~${CPU_LIMIT_PROD_HH}~" k8s-deployment.yaml
     - sed -i "s~<CPU_REQUESTED>~${CPU_REQUESTED_PROD_HH}~" k8s-deployment.yaml
-    - sed -i "s~<SERVER_IMAGE_TAG>~${SERVER_IMAGE_TAG}~" k8s-deployment.yaml
+    - sed -i "s~<SERVER_IMAGE_TAG>~${LATEST_PROD_IMAGE_TAG}~" k8s-deployment.yaml
     - sed -i "s~<RUN_CONFIG_SECRET_NAME>~${RUN_CONFIG_SECRET_NAME_PROD_HH}~" k8s-deployment.yaml
     - sed -i "s~<GUNICORN_CONFIG_SECRET_NAME>~${GUNICORN_CONFIG_SECRET_NAME_PROD_HH}~" k8s-deployment.yaml
     - cat k8s-deployment.yaml
