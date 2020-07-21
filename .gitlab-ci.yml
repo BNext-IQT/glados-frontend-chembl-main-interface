@@ -69,7 +69,7 @@ build_docker_image_for_staging:
     - docker push ${SERVER_IMAGE_TAG}
     - sed -i "s~<UID>~${STATIC_FILES_UID}~g" Dockerfile-Prod
     - sed -i "s~<GID>~${STATIC_FILES_GID}~g" Dockerfile-Prod
-    - docker build --tag ${LATEST_PROD_IMAGE_TAG} -f Dockerfile-Prod .
+    - docker build --tag ${LATEST_PROD_IMAGE_TAG} --cache-from ${SERVER_IMAGE_TAG} -f Dockerfile-Prod .
     - docker push ${LATEST_PROD_IMAGE_TAG}
 
 ## ----------------------------------------------------------------------------------------------------------------------
