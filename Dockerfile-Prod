@@ -25,7 +25,7 @@ ENV PATH="/home/glados/.local/bin:${PATH}"
 RUN pip install -U "setuptools<46"
 RUN pip install --user -r requirements.txt
 COPY . .
-RUN CONFIG_FILE_PATH='/app/configurations/build_config.yml' python manage.py collectstatic --no-input
+RUN CONFIG_FILE_PATH='/app/configurations/build_prod_config.yml' python manage.py collectstatic --no-input
 
 FROM base AS development-server
 ENTRYPOINT python manage.py runserver 8000
