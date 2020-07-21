@@ -26,8 +26,6 @@ def main():
         if settings.COMPRESS_ENABLED and settings.COMPRESS_OFFLINE:
             execute_from_command_line([sys.argv[0], 'compress'])
 
-        return f'Success: {result}'
-
     elif os.environ.get('RUN_MAIN') != 'true' and len(sys.argv) > 1 and sys.argv[1] == 'sendstaticstoserver':
 
         glados.static_files_collector.copy_and_compress_files_to_statics_server()
