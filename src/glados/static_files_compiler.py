@@ -102,6 +102,7 @@ class StaticFilesCompiler(object):
         result = compiled_all_coffee_correctly and compiled_all_scss_correctly
 
         if settings.STATIC_FONTS_URL_REPLACING is not None:
+            time.sleep(5)
             fonts_url_replacing_config = settings.STATIC_FONTS_URL_REPLACING
             search_for = fonts_url_replacing_config['search_for']
             replace_with = fonts_url_replacing_config['replace_with']
