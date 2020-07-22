@@ -3,8 +3,13 @@ from django.conf import settings
 
 # Additional variables required for the templates
 def glados_settings_context_processor(request):
+
+    absolute_uri = request.build_absolute_uri('/')
+    if settings.ENFORCE_HTTPS_IN_ABSOLUTE_URI_FOR_JS:
+        absolute_uri.replace('http', 'https')
+
     gsc_vars = {
-        'request_root_url': request.build_absolute_uri('/'),
+        'request_root_url': absolute_uri,
         'js_debug': 'true' if settings.DEBUG else 'false',
         'ws_url': settings.WS_URL,
         'beaker_url': settings.BEAKER_URL,
