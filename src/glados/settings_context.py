@@ -6,7 +6,7 @@ def glados_settings_context_processor(request):
 
     absolute_uri = request.build_absolute_uri('/')
     if settings.ENFORCE_HTTPS_IN_ABSOLUTE_URI_FOR_JS:
-        absolute_uri.replace('http', 'https')
+        absolute_uri = absolute_uri.replace('http', 'https')
 
     gsc_vars = {
         'request_root_url': absolute_uri,
