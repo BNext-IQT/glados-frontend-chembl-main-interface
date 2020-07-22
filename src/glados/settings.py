@@ -112,6 +112,8 @@ ES_PROXY_API_BASE_URL_INTERNAL = run_config.get('es_proxy_base_url_internal', ES
 SERVER_BASE_PATH = run_config.get('server_base_path', '')
 print('SERVER_BASE_PATH: ', SERVER_BASE_PATH)
 
+ENFORCE_HTTPS_IN_ABSOLUTE_URI_FOR_JS = run_config.get('enforce_https_in_absolute_uri_for_js', False)
+
 # ----------------------------------------------------------------------------------------------------------------------
 # ChEMBL API
 # ----------------------------------------------------------------------------------------------------------------------
