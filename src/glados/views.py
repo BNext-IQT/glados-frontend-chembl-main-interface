@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from twitter import *
+from django.views.decorators.cache import cache_page
 
 from . import og_tags_generator
 from . import schema_tags_generator
@@ -16,20 +17,13 @@ from django.http import Http404
 import json
 
 
+@cache_page(60 * 60, cache='local_memory')
 def visualise(request):
     context = {
         'hide_breadcrumbs': True
     }
 
     return render(request, 'glados/visualise.html', context)
-
-
-def play(request):
-    context = {
-        'hide_breadcrumbs': True
-    }
-
-    return render(request, 'glados/play.html', context)
 
 
 def get_latest_tweets(page_number=1, count=15):
@@ -71,6 +65,7 @@ def get_latest_tweets(page_number=1, count=15):
         return default_empty_response
 
 
+@cache_page(60 * 60)
 def get_latest_tweets_json(request):
 
     if not settings.TWITTER_ENABLED:
@@ -115,6 +110,7 @@ def get_latest_tweets_json(request):
     return JsonResponse(tweets)
 
 
+@cache_page(60 * 60)
 def get_latest_blog_entries(request, pageToken):
     if not settings.BLOGGER_ENABLED:
         default_empty_response = {
@@ -189,6 +185,7 @@ def get_latest_blog_entries(request, pageToken):
     return JsonResponse(entries)
 
 
+@cache_page(60 * 60)
 def get_github_details(request):
 
     if not settings.GITHUB_DETAILS_ENABLED:
@@ -237,17 +234,7 @@ def get_github_details(request):
     return JsonResponse(last_commit)
 
 
-def replace_urls_from_entinies(html, urls):
-    """
-    :return: the html with the corresponding links from the entities
-    """
-    for url in urls:
-        link = '<a href="%s">%s</a>' % (url['url'], url['display_url'])
-        html = html.replace(url['url'], link)
-
-    return html
-
-
+@cache_page(60 * 60, cache='local_memory')
 def main_page(request):
     context = {
         'main_page': True,
@@ -257,6 +244,7 @@ def main_page(request):
     return render(request, 'glados/main_page.html', context)
 
 
+@cache_page(60 * 60, cache='local_memory')
 def design_components(request):
     context = {
         'hide_breadcrumbs': True
@@ -264,6 +252,7 @@ def design_components(request):
     return render(request, 'glados/base/design_components.html', context)
 
 
+@cache_page(60 * 60, cache='local_memory')
 def main_html_base_no_bar(request):
     context = {
         'show_save_button': True
@@ -348,7 +337,7 @@ def register_usage(request):
 # Report Cards
 # ----------------------------------------------------------------------------------------------------------------------
 
-
+@cache_page(60 * 60)
 def compound_report_card(request, chembl_id):
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_compound(chembl_id),
@@ -359,6 +348,7 @@ def compound_report_card(request, chembl_id):
     return render(request, 'glados/compoundReportCard.html', context)
 
 
+@cache_page(60 * 60)
 def assay_report_card(request, chembl_id):
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_assay(chembl_id)
@@ -367,6 +357,7 @@ def assay_report_card(request, chembl_id):
     return render(request, 'glados/assayReportCard.html', context)
 
 
+@cache_page(60 * 60)
 def cell_line_report_card(request, chembl_id):
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_cell_line(chembl_id)
@@ -375,6 +366,7 @@ def cell_line_report_card(request, chembl_id):
     return render(request, 'glados/cellLineReportCard.html', context)
 
 
+@cache_page(60 * 60)
 def tissue_report_card(request, chembl_id):
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_tissue(chembl_id)
@@ -383,6 +375,7 @@ def tissue_report_card(request, chembl_id):
     return render(request, 'glados/tissueReportCard.html', context)
 
 
+@cache_page(60 * 60)
 def target_report_card(request, chembl_id):
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_target(chembl_id)
@@ -390,7 +383,7 @@ def target_report_card(request, chembl_id):
 
     return render(request, 'glados/targetReportCard.html', context)
 
-
+@cache_page(60 * 60)
 def document_report_card(request, chembl_id):
     context = {
         'og_tags': og_tags_generator.get_og_tags_for_document(chembl_id)
