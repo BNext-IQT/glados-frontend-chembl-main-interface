@@ -17,7 +17,7 @@ from django.http import Http404
 import json
 
 
-@cache_page(60 * 60, cache='local_memory')
+@cache_page(60 * 60)
 def visualise(request):
     context = {
         'hide_breadcrumbs': True
@@ -234,7 +234,7 @@ def get_github_details(request):
     return JsonResponse(last_commit)
 
 
-@cache_page(60 * 60, cache='local_memory')
+@cache_page(60 * 60)
 def main_page(request):
     context = {
         'main_page': True,
@@ -244,7 +244,7 @@ def main_page(request):
     return render(request, 'glados/main_page.html', context)
 
 
-@cache_page(60 * 60, cache='local_memory')
+@cache_page(60 * 60)
 def design_components(request):
     context = {
         'hide_breadcrumbs': True
@@ -252,7 +252,7 @@ def design_components(request):
     return render(request, 'glados/base/design_components.html', context)
 
 
-@cache_page(60 * 60, cache='local_memory')
+@cache_page(60 * 60)
 def main_html_base_no_bar(request):
     context = {
         'show_save_button': True
