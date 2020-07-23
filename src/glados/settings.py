@@ -373,6 +373,12 @@ else:
 
 ES_PROXY_CACHE_SECONDS = run_config.get('es_proxy_cache_seconds', 604800)  # 7 days
 
+# Always set up a local memory cache
+CACHES['local_memory'] = {
+    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    'LOCATION': 'local_memory',
+}
+
 # ----------------------------------------------------------------------------------------------------------------------
 # Logging
 # ----------------------------------------------------------------------------------------------------------------------
