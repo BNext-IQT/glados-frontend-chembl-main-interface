@@ -764,6 +764,10 @@ Compound.COLUMNS_SETTINGS = {
     Compound.COLUMNS.ALOGP
   ]
 
+  RESULTS_LIST_REPORT_CARD_CAROUSEL: [
+    Compound.COLUMNS.CHEMBL_ID
+  ]
+
 }
 
 Compound.MINI_REPORT_CARD =
