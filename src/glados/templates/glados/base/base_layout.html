@@ -132,6 +132,7 @@
     <script type="text/javascript" charset="utf-8">
 
         $(document).ready(function () {
+            glados.VueComponents.EBIHeader.load()
             $('#GladosMainSplashScreen').hide();
             glados.helpers.HeaderHelper.initializeHeader();
             glados.views.SearchResults.SearchBarView.createInstances();

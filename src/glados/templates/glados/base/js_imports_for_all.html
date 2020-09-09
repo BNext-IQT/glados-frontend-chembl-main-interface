@@ -5,6 +5,9 @@
     {% csrf_token %}
 </div>
 
+<!-- Vue JS! -->
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
 {% load compress %}
 <!-- FIRST COMPRESS: loads java script external libraries and glados settings -->
 
@@ -434,5 +437,15 @@
         <script type="text/javascript">
             glados.logGladosSettings();
         </script>
+    {% endblock %}
+{% endcompress %}
+
+{% compress js %}
+    {% block common_js_vue_components %}
+        <!-- Components -->
+        <script type="text/javascript" src="{% static 'js/vue_components/components_source/ebi-basic-components.min.js' %}"></script>
+        <!-- Loaders -->
+        <script type="text/javascript" type="module" src="{% static 'js/vue_components/components_load/load_ebi_header.js' %}"></script>
+
     {% endblock %}
 {% endcompress %}
