@@ -20,9 +20,16 @@ glados.useNameSpace 'glados.views.SearchResults',
       @autocompleteView = new glados.views.SearchResults.SearchBarAutocompleteView
         el: autocompleteElem
       @autocompleteView.attachSearchBar(@)
+
+      @initialiseAdvancedSearchButton()
       @initializeSketcherButtons()
       @initializeSequenceSearchButtons()
       @initializeSaveButton()
+
+    initialiseAdvancedSearchButton: ->
+      $openAdvancedSearchBtn = $(@el).find('.BCK-Advanced-Search')
+      $openAdvancedSearchBtn.click glados.helpers.AdvancedSearchHelper.showAdvancedSearchModal
+
 
     initializeSketcherButtons: ->
       $openEditorBtn = $(@el).find('.BCK-Draw-Structure')
