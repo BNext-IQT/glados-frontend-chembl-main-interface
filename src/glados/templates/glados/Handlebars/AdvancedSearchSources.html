@@ -1,27 +1,35 @@
 {% verbatim %}
 <script id="Handlebars-Common-AdvancedSearchModal" type="text/x-handlebars-template" data-starting-top="0%">
-  <div id="{{id}}" class='modal' style="display: none; width:85% !important; max-height: 100vh !important; overflow-y: hidden !important ; overflow-x: hidden !important; height: 100vh !important;">
-    <div class="advanced-search-container">
+    <div id="{{id}}" class='modal'
+         style="display: none; width:85% !important; max-height: 100vh !important; overflow-y: hidden !important ; overflow-x: hidden !important; height: 100vh !important;">
+        <div class="advanced-search-container">
 
-        <div class="tabs-headers-container">
+            <div class="tabs-headers-container">
 
-            <a class="tab-selector selected">
-                Chemical Structure
-            </a>
+                <a class="tab-selector selected">
+                    Chemical Structure
+                </a>
 
-            <a class="tab-selector">
-                Biological Sequence
-            </a>
+                <a class="tab-selector">
+                    Biological Sequence
+                </a>
 
-            <a class="tab-selector">
-                Search by IDs
-            </a>
+                <a class="tab-selector">
+                    Search by IDs
+                </a>
 
-        </div>
-        <div>
-            Tabs Content
+            </div>
+            <div class="tabs-content-container">
+                <div class="BCK-Structure-Search">
+                    {% endverbatim %}
+                    {% with in_modal=False %}
+                        {% include "glados/Sketchers/marvinSearch.html" %}
+                    {% endwith %}
+                    {% verbatim %}
+                </div>
+
+            </div>
         </div>
     </div>
-  </div>
 </script>
 {% endverbatim %}

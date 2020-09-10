@@ -14,4 +14,8 @@ glados.useNameSpace 'glados.helpers',
           'Handlebars-Common-AdvancedSearchModal',
           startingTop=undefined, endingTop=undefined, customID=editorModalID)
 
+      if not @advancedSearchView?
+        @advancedSearchView = new glados.views.SearchResults.AdvancedSearchView
+          el: $editorModal
+
       $editorModal.modal('open')
