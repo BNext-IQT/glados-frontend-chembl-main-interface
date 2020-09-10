@@ -863,3 +863,32 @@ $facets-width-large: 21%;
     }
   }
 }
+
+/**
+* Advanced Search
+* ----------------------------------------------------------------------------------------------------------------------
+*/
+.advanced-search-container {
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .tabs-headers-container {
+    background-color: $grey-lightest;
+    display: flex;
+
+    .tab-selector{
+      color: black;
+      padding: 20px;
+      &.selected {
+        background-color: $divider-grey;
+        border-bottom: 2px solid $teal-3;
+      }
+      &:hover {
+        background-color: $grey-light;
+      }
+    }
+  }
+
+}
