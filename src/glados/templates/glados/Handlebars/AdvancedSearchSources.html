@@ -6,26 +6,35 @@
 
             <div class="tabs-headers-container">
 
-                <a class="tab-selector selected">
+                <a class="BCK-select-tab tab-selector selected" data-tab="chemical_structure">
                     Chemical Structure
                 </a>
 
-                <a class="tab-selector">
+                <a class="BCK-select-tab tab-selector" data-tab="biological_sequence">
                     Biological Sequence
                 </a>
 
-                <a class="tab-selector">
+                <a class="BCK-select-tab tab-selector" data-tab="search_by_ids">
                     Search by IDs
                 </a>
 
             </div>
             <div class="tabs-content-container">
-                <div class="BCK-Structure-Search tab-content">
+
+                <div class="BCK-Structure-Search tab-content BCK-tab-content">
                     {% endverbatim %}
                     {% with in_modal=False %}
                         {% include "glados/Sketchers/marvinSearch.html" %}
                     {% endwith %}
                     {% verbatim %}
+                </div>
+
+                <div class="BCK-BiologicalSequence-Search tab-content BCK-tab-content">
+                    Biological Sequence Search!
+                </div>
+
+                <div class="BCK-ByIDs-Search tab-content BCK-tab-content">
+                    Biological Sequence Search!
                 </div>
 
             </div>
