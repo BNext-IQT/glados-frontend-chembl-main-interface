@@ -869,7 +869,7 @@ $facets-width-large: 21%;
 * ----------------------------------------------------------------------------------------------------------------------
 */
 .advanced-search-container {
-  background-color: red;
+
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -888,6 +888,16 @@ $facets-width-large: 21%;
       &:hover {
         background-color: $grey-light;
       }
+    }
+  }
+
+  .tabs-content-container {
+    height: 90vh;
+    height: calc(100% - 60px);
+    padding: 5px;
+
+    .tab-content {
+      height: 100%;
     }
   }
 

@@ -13,3 +13,10 @@ glados.useNameSpace 'glados.views.SearchResults',
 
     initMarvinSketcher: ->
 
+      $structureSearchContainer = $(@el).find('.BCK-Structure-Search')
+      console.log('$structureSearchContainer: ', $structureSearchContainer)
+
+      if not @marvinEditor?
+        @marvinEditor = new MarvinSketcherView
+          el: $structureSearchContainer
+

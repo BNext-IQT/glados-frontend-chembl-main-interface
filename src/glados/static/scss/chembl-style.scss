@@ -506,7 +506,8 @@ a.error-redirect-link {
     }
   }
 
-  &.in-modal {
+  @mixin marvin-editor {
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -574,5 +575,16 @@ a.error-redirect-link {
         flex-shrink: 0;
       }
     }
+
+  }
+
+  &.in-modal {
+    @include marvin-editor;
+  }
+
+  &.in-tab {
+    @include marvin-editor;
+    min-height: 100%;
+    height: 100%;
   }
 }
