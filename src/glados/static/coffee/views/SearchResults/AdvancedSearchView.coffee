@@ -79,6 +79,6 @@ glados.useNameSpace 'glados.views.SearchResults',
         $tabSelector = $(@el).find('.BCK-select-tab[data-tab="biological_sequence"]')
         $tabSelector.addClass('selected')
       else if tab_id == @TABS_IDENTIFIERS.SEARCH_BY_BIOLOGICAL_SEQUENCE
-        $tabSelector = $(@el).find('.BCK-select-tab[data-tab="biological_sequence"]')
+        $tabSelector = $(@el).find('.BCK-select-tab[data-tab="chemical_structure"]')
         $tabSelector.addClass('selected')
 
