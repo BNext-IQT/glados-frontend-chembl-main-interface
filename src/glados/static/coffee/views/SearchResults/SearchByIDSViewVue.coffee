@@ -4,3 +4,4 @@ glados.useNameSpace 'glados.views.SearchResults',
     initialize: ->
 
       console.log('SEARCH BY IDS VUE')
+      console.log("ChemblBasicComponents", ChemblBasicComponents.SearchByIDsMenu)
