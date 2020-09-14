@@ -37,6 +37,15 @@ glados.useNameSpace 'glados.views.SearchResults',
       $searchTypeContainer = $(@el).find('.BCK-BiologicalSequence-Search')
       $searchTypeContainer.show()
 
+      $menuContainer = $(@el).find('.BCK-BiologicalSequence-Search-Menu-Container')
+
+      if not @sequenceSearchView?
+
+        @sequenceSearchView = new glados.views.SearchResults.SequenceSearchView
+          el: $menuContainer
+
+        @sequenceSearchView.render({})
+
     openByIDsSearch: ->
       @unselectAllTabs()
       @markSelectedTab(@TABS_IDENTIFIERS.SEARCH_BY_IDS)
