@@ -54,6 +54,13 @@ glados.useNameSpace 'glados.views.SearchResults',
       $searchTypeContainer = $(@el).find('.BCK-ByIDs-Search')
       $searchTypeContainer.show()
 
+      $menuContainer = $(@el).find('.BCK-SearchByIDs-Menu-Container')
+
+      if not @searchByIDsView?
+
+        @searchByIDsView = new glados.views.SearchResults.SearchByIDSViewVue
+          el: $menuContainer
+
     selectTab: (event) ->
       console.log('SELECT TAB FROM CLICK')
       $clickedElem = $(event.currentTarget)
@@ -80,7 +87,6 @@ glados.useNameSpace 'glados.views.SearchResults',
       $allTabsSelector.removeClass('selected')
 
     markSelectedTab: (tab_id) ->
-
       if tab_id == @TABS_IDENTIFIERS.SEARCH_BY_IDS
         $tabSelector = $(@el).find('.BCK-select-tab[data-tab="search_by_ids"]')
         $tabSelector.addClass('selected')
