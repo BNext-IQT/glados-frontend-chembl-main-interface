@@ -8,18 +8,18 @@ glados.useNameSpace 'glados.views.SearchResults',
       SEARCH_BY_BIOLOGICAL_SEQUENCE: 'biological_sequence'
 
     initialize: ->
-      console.log('INIT ADVANCED SEARCH VIEW!')
       @initDefaultTab()
 
     events:
       'click .BCK-select-tab': 'selectTab'
 
     initDefaultTab: ->
+      console.log('INIT DEFAULT TAB')
       @openChemicalStructureSearchTab()
 
     openChemicalStructureSearchTab: ->
       @unselectAllTabs()
-      @selectTab(@TABS_IDENTIFIERS.SEARCH_BY_CHEMICAL_STRUCTURE)
+      @markSelectedTab(@TABS_IDENTIFIERS.SEARCH_BY_CHEMICAL_STRUCTURE)
       @hideAllTabs()
 
       $searchTypeContainer = $(@el).find('.BCK-Structure-Search')
@@ -31,7 +31,7 @@ glados.useNameSpace 'glados.views.SearchResults',
 
     openBiologicalSequenceSearch: ->
       @unselectAllTabs()
-      @selectTab(@TABS_IDENTIFIERS.SEARCH_BY_BIOLOGICAL_SEQUENCE)
+      @markSelectedTab(@TABS_IDENTIFIERS.SEARCH_BY_BIOLOGICAL_SEQUENCE)
       @hideAllTabs()
 
       $searchTypeContainer = $(@el).find('.BCK-BiologicalSequence-Search')
@@ -39,14 +39,14 @@ glados.useNameSpace 'glados.views.SearchResults',
 
     openByIDsSearch: ->
       @unselectAllTabs()
-      @selectTab(@TABS_IDENTIFIERS.SEARCH_BY_IDS)
+      @markSelectedTab(@TABS_IDENTIFIERS.SEARCH_BY_IDS)
       @hideAllTabs()
 
       $searchTypeContainer = $(@el).find('.BCK-ByIDs-Search')
       $searchTypeContainer.show()
 
     selectTab: (event) ->
-      console.log('SELECT TAB')
+      console.log('SELECT TAB FROM CLICK')
       $clickedElem = $(event.currentTarget)
       desiredViewType = $clickedElem.attr('data-tab')
       console.log('desiredViewType: ', desiredViewType)
@@ -70,15 +70,15 @@ glados.useNameSpace 'glados.views.SearchResults',
       $allTabsSelector = $(@el).find('.BCK-select-tab')
       $allTabsSelector.removeClass('selected')
 
-    selectTab: (tab_id) ->
+    markSelectedTab: (tab_id) ->
 
       if tab_id == @TABS_IDENTIFIERS.SEARCH_BY_IDS
         $tabSelector = $(@el).find('.BCK-select-tab[data-tab="search_by_ids"]')
         $tabSelector.addClass('selected')
       else if tab_id == @TABS_IDENTIFIERS.SEARCH_BY_CHEMICAL_STRUCTURE
-        $tabSelector = $(@el).find('.BCK-select-tab[data-tab="biological_sequence"]')
+        $tabSelector = $(@el).find('.BCK-select-tab[data-tab="chemical_structure"]')
         $tabSelector.addClass('selected')
       else if tab_id == @TABS_IDENTIFIERS.SEARCH_BY_BIOLOGICAL_SEQUENCE
-        $tabSelector = $(@el).find('.BCK-select-tab[data-tab="chemical_structure"]')
+        $tabSelector = $(@el).find('.BCK-select-tab[data-tab="biological_sequence"]')
         $tabSelector.addClass('selected')
 
