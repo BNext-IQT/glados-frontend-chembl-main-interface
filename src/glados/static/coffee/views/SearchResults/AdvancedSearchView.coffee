@@ -14,7 +14,6 @@ glados.useNameSpace 'glados.views.SearchResults',
       'click .BCK-select-tab': 'selectTab'
 
     initDefaultTab: ->
-      console.log('INIT DEFAULT TAB')
       @openChemicalStructureSearchTab()
 
     openChemicalStructureSearchTab: ->
@@ -62,20 +61,15 @@ glados.useNameSpace 'glados.views.SearchResults',
           el: $menuContainer
 
     selectTab: (event) ->
-      console.log('SELECT TAB FROM CLICK')
       $clickedElem = $(event.currentTarget)
       desiredViewType = $clickedElem.attr('data-tab')
-      console.log('desiredViewType: ', desiredViewType)
 
       if desiredViewType == @TABS_IDENTIFIERS.SEARCH_BY_IDS
-        console.log('OPEN SEARCH BY IDS')
         @openByIDsSearch()
 
       else if desiredViewType == @TABS_IDENTIFIERS.SEARCH_BY_CHEMICAL_STRUCTURE
-        console.log('SEARCH_BY_CHEMICAL_STRUCTURE')
         @openChemicalStructureSearchTab()
       else if desiredViewType == @TABS_IDENTIFIERS.SEARCH_BY_BIOLOGICAL_SEQUENCE
-        console.log('SEARCH BY biological_sequence')
         @openBiologicalSequenceSearch()
 
     hideAllTabs: ->
