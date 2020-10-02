@@ -58,7 +58,7 @@ setup(
     license='Apache Software License',
     package_dir={'': src_dir},
     packages=find_packages(src_dir),
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     install_requires=requirements_data,
     package_data=package_data_desc,
     include_package_data=True,
