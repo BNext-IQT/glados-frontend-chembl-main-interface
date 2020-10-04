@@ -16,4 +16,3 @@ from django.conf import settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "glados.settings")
 
 APP = get_wsgi_application()
-APP = WhiteNoise(APP, root=settings.STATIC_ROOT)
